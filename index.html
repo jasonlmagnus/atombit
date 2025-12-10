@@ -1776,6 +1776,167 @@
             font-size: 0.8rem;
         }
 
+        /* ============================================
+           CHALLENGER POSITIONING SECTION
+           ============================================ */
+        .challenger-section {
+            padding: 6rem 0;
+            background: var(--bg);
+        }
+
+        .challenger-section .section-inner {
+            max-width: 1100px;
+        }
+
+        .challenger-intro {
+            color: var(--text-dim);
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto 1rem;
+            text-align: center;
+        }
+
+        .flip-hint {
+            font-size: 0.75rem;
+            color: var(--accent);
+            font-style: italic;
+            text-align: center;
+        }
+
+        .challenger-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 900px) {
+            .challenger-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 550px) {
+            .challenger-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Flip Card */
+        .card-container {
+            perspective: 1000px;
+            height: 280px;
+        }
+
+        .flip-card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .flip-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        /* Front */
+        .card-front {
+            background: var(--surface);
+            border: 1px solid var(--border);
+        }
+
+        .flip-card[data-type="misfit"] .card-front { background: #1a5f7a; border-color: #1a5f7a; }
+        .flip-card[data-type="disruptor"] .card-front { background: #e85a5a; border-color: #e85a5a; }
+        .flip-card[data-type="human"] .card-front { background: #d4a03c; border-color: #d4a03c; }
+        .flip-card[data-type="maverick"] .card-front { background: #4a7c94; border-color: #4a7c94; }
+        .flip-card[data-type="nextgen"] .card-front { background: #c9a227; border-color: #c9a227; }
+        .flip-card[data-type="missionary"] .card-front { background: #2a9d8f; border-color: #2a9d8f; }
+
+        .card-title {
+            font-family: var(--serif);
+            font-size: 1.4rem;
+            font-style: italic;
+            font-weight: 400;
+            margin-bottom: 0.75rem;
+            color: white;
+        }
+
+        .card-desc {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .card-flip-prompt {
+            position: absolute;
+            bottom: 1rem;
+            left: 0;
+            right: 0;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* Back */
+        .card-back {
+            background: var(--bg);
+            border: 2px solid var(--accent);
+            transform: rotateY(180deg);
+        }
+
+        .card-back-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .card-back-headline {
+            font-family: var(--serif);
+            font-size: 1.15rem;
+            font-style: italic;
+            color: var(--text);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .card-back-move {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        .card-back-move strong {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .fit-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent);
+            color: white;
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
         /* Animations */
         .fade-in {
             opacity: 0;
@@ -2148,6 +2309,7 @@
             <a data-target="territories">05</a>
             <a data-target="handoff">06</a>
             <a data-target="workshops">Workshops</a>
+            <a data-target="challenger">Challenger</a>
         </nav>
 
         <!-- ============================================
@@ -2846,6 +3008,117 @@
             </div>
         </section>
 
+        <!-- Challenger Positioning Section -->
+        <section id="challenger" class="challenger-section">
+            <div class="section-inner">
+                <div class="chapter-label">Challenging the Category</div>
+                <h2 class="section-title fade-in">Six ways to <em>challenge</em></h2>
+                <p class="challenger-intro fade-in">The market is polarised: fragmented agencies vs slow consultancies. Atombit sits in the gap. But which challenger stance fits best?</p>
+                <p class="flip-hint fade-in">Click any card to see how Atombit plays it</p>
+
+                <div class="challenger-grid">
+                    <!-- Misfit -->
+                    <div class="card-container fade-in">
+                        <div class="flip-card" data-type="misfit">
+                            <div class="card-face card-front">
+                                <div class="card-title">The Misfit</div>
+                                <div class="card-desc">Be the antidote. Do the opposite of what all competitors have in common.</div>
+                                <div class="card-flip-prompt">Click to flip</div>
+                            </div>
+                            <div class="card-face card-back">
+                                <div class="card-back-label">Atombit's move</div>
+                                <div class="card-back-headline">"They sell time. We sell outcomes."</div>
+                                <div class="card-back-move">Everyone else charges day rates. Atombit charges for <strong>ROI delivered</strong>. While competitors protect billable hours, you guarantee measurable returns. The misfit move: make their pricing model look broken.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Disruptor -->
+                    <div class="card-container fade-in">
+                        <div class="flip-card" data-type="disruptor">
+                            <div class="card-face card-front">
+                                <div class="fit-badge">Best fit</div>
+                                <div class="card-title">The Disruptor</div>
+                                <div class="card-desc">Change the mode of competition. Redefine what matters in your industry.</div>
+                                <div class="card-flip-prompt">Click to flip</div>
+                            </div>
+                            <div class="card-face card-back">
+                                <div class="card-back-label">Atombit's move</div>
+                                <div class="card-back-headline">"Don't ask who's best. Ask who's fastest to value."</div>
+                                <div class="card-back-move">Redefine the buying criteria. Not "best strategists" or "biggest team" — but <strong>speed to measurable ROI</strong>. Atoms + bits = human ingenuity at machine pace. Make the old criteria irrelevant.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Human -->
+                    <div class="card-container fade-in">
+                        <div class="flip-card" data-type="human">
+                            <div class="card-face card-front">
+                                <div class="card-title">Real & Human</div>
+                                <div class="card-desc">Challenge the faceless service of the competition.</div>
+                                <div class="card-flip-prompt">Click to flip</div>
+                            </div>
+                            <div class="card-face card-back">
+                                <div class="card-back-label">Atombit's move</div>
+                                <div class="card-back-headline">"Atoms. The human half of everything we do."</div>
+                                <div class="card-back-move">Big consultancies hide behind brands. Atombit leads with <strong>named founders, visible experts</strong>. 150 specialists, not interchangeable suits. The name says it: atoms (human) + bits (machine). Neither works alone.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Maverick -->
+                    <div class="card-container fade-in">
+                        <div class="flip-card" data-type="maverick">
+                            <div class="card-face card-front">
+                                <div class="card-title">Irreverent Maverick</div>
+                                <div class="card-desc">Use humour to challenge complacency and comfort found in the bland.</div>
+                                <div class="card-flip-prompt">Click to flip</div>
+                            </div>
+                            <div class="card-face card-back">
+                                <div class="card-back-label">Atombit's move</div>
+                                <div class="card-back-headline">"Experience transformation without the theatre."</div>
+                                <div class="card-back-move">Mock the consulting pantomime: the 200-slide decks, the endless workshops, the "alignment sessions." <strong>Atombit ships while others are still stakeholder-mapping.</strong> Light touch. Real outcomes.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Next Gen -->
+                    <div class="card-container fade-in">
+                        <div class="flip-card" data-type="nextgen">
+                            <div class="card-face card-front">
+                                <div class="fit-badge">Best fit</div>
+                                <div class="card-title">Next Generation</div>
+                                <div class="card-desc">Question the market leader — or even the whole category.</div>
+                                <div class="card-flip-prompt">Click to flip</div>
+                            </div>
+                            <div class="card-face card-back">
+                                <div class="card-back-label">Atombit's move</div>
+                                <div class="card-back-headline">"Built for how CX moves now."</div>
+                                <div class="card-back-move">The old consulting model was built for a slower world. Atombit is <strong>AI-native, acquisition-fuelled, ROI-obsessed</strong>. Four solution families. 150 specialists. Not competing with the Big Four — replacing the model entirely.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Missionary -->
+                    <div class="card-container fade-in">
+                        <div class="flip-card" data-type="missionary">
+                            <div class="card-face card-front">
+                                <div class="fit-badge">Best fit</div>
+                                <div class="card-title">The Missionary</div>
+                                <div class="card-desc">Exist to change something in the world that seems broken.</div>
+                                <div class="card-flip-prompt">Click to flip</div>
+                            </div>
+                            <div class="card-face card-back">
+                                <div class="card-back-label">Atombit's move</div>
+                                <div class="card-back-headline">"Experience Intelligence should create value, not consume budget."</div>
+                                <div class="card-back-move">The broken thing: enterprises spend millions on CX and EX transformation with no measurable return. Atombit exists to <strong>fix the ROI problem</strong>. Not a service — a mission. Every solution tied to profit.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <footer>
             <p>Prepared exclusively for Atombit by Magnus Consulting</p>
         </footer>
@@ -3320,6 +3593,13 @@
                     }
                 });
             }
+
+            // Flip Cards
+            document.querySelectorAll('.flip-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    card.classList.toggle('flipped');
+                });
+            });
         });
     </script>
 </body>
