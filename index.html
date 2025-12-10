@@ -2503,12 +2503,16 @@
         }
 
         .case-carousel .slide.active {
-            display: block;
+            display: block !important;
             animation: fadeIn 0.4s ease-in;
         }
 
-        .case-carousel .slide-image.active {
-            display: flex;
+        .case-carousel .slide.slide-image.active {
+            display: flex !important;
+        }
+
+        .case-carousel .slide.slide-mission.active {
+            display: grid !important;
         }
 
         @keyframes fadeIn {
