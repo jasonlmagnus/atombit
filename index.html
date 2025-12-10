@@ -1996,6 +1996,48 @@
         .workshop-intro-body p:last-child { margin-bottom: 0; }
         .workshop-intro-body strong { color: var(--text); }
 
+        /* Workshop Gallery */
+        .workshop-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .workshop-gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .workshop-gallery-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .workshop-gallery-item img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .workshop-gallery-caption {
+            padding: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-dim);
+        }
+
+        .workshop-gallery-caption strong {
+            display: block;
+            color: var(--accent);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
         .case-study-box {
             padding-top: 4rem;
             border-top: 1px solid var(--border);
@@ -2982,6 +3024,22 @@
                         <p>Between the four of us, we've facilitated hundreds of creative workshops across every kind of organization you can imagine. From senior leadership teams to company-wide engagements, from startups finding their footing to global brands reimagining their future.</p>
                         <p>What we've learned is that <strong>no two challenges call for the same approach.</strong> So we've built a deep toolbox of techniques and we select the right ones for your needs and your culture.</p>
                         <p>Sometimes that means props and provocation. Sometimes it means bringing in actors to make an idea visceral. Sometimes it means storytelling that reframes how people see a problem. We've run sessions that gaze boldly into the future—and others that ask harder questions about what's right in front of us.</p>
+                    </div>
+                </div>
+                
+                <!-- Workshop images: Location & Interactivity -->
+                <div class="workshop-gallery fade-in">
+                    <div class="workshop-gallery-item">
+                        <img src="workshop-interactive.png" alt="Interactive workshop session">
+                        <div class="workshop-gallery-caption">
+                            <strong>Interactivity is everything.</strong> Real breakthroughs don't happen in PowerPoint. They happen when people are on their feet, competing, creating, surprising themselves.
+                        </div>
+                    </div>
+                    <div class="workshop-gallery-item">
+                        <img src="workshop-location-shard.png" alt="The Shard, London">
+                        <div class="workshop-gallery-caption">
+                            <strong>Location matters.</strong> We take people out of their everyday environment. Different spaces unlock different thinking. From The Shard to countryside retreats.
+                        </div>
                     </div>
                 </div>
                 
