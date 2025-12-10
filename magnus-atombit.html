@@ -1,0 +1,3295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magnus × Atombit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --bg-secondary: #141414;
+            --surface: #1a1a1a;
+            --border: #2a2a2a;
+            --text: #fafafa;
+            --text-dim: #a0a0a0;
+            --accent: #ff4d00;
+            --accent-dim: rgba(255, 77, 0, 0.15);
+            --teal: #2a4a4a;
+            --green: #4ade80;
+            --red: #f87171;
+            --serif: 'Instrument Serif', Georgia, serif;
+            --sans: 'Syne', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--sans);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Password Gate */
+        .password-gate {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .password-gate.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .password-content {
+            text-align: center;
+            max-width: 400px;
+            padding: 2rem;
+        }
+
+        .password-content h1 {
+            font-family: var(--serif);
+            font-size: 2rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+
+        .password-content p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .password-input-wrap input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid #333;
+            color: var(--text);
+            font-family: var(--sans);
+            font-size: 1rem;
+            letter-spacing: 0.2em;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .password-input-wrap input:focus {
+            border-color: var(--accent);
+        }
+
+        .password-input-wrap input::placeholder {
+            color: #555;
+            letter-spacing: 0.1em;
+        }
+
+        /* Main Content */
+        .content-wrapper {
+            opacity: 0;
+            transition: opacity 0.8s ease 0.3s;
+        }
+
+        .content-wrapper.visible {
+            opacity: 1;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .top-nav a {
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            text-decoration: none;
+            padding: 0.4rem 0.75rem;
+            border: 1px solid transparent;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .top-nav a:hover {
+            color: var(--text);
+            border-color: var(--border);
+        }
+
+        .top-nav a.active {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .nav-divider {
+            width: 1px;
+            background: var(--border);
+            margin: 0 0.5rem;
+        }
+
+        /* Sections */
+        section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6rem 2rem 4rem;
+            position: relative;
+        }
+
+        .section-inner {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Chapter/Phase Labels */
+        .chapter-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .chapter-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, var(--accent), transparent);
+            max-width: 100px;
+        }
+
+        .section-title {
+            font-family: var(--serif);
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 400;
+            margin-bottom: 2rem;
+            line-height: 1.2;
+        }
+
+        .section-title em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        /* ============================================
+           PART 1: THE UNCOMFORTABLE TRUTH
+           ============================================ */
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--accent-dim) 0%, transparent 70%);
+            pointer-events: none;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .hero-eyebrow {
+            font-size: 0.75rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeUp 1s ease forwards 0.3s;
+        }
+
+        .hero h1 {
+            font-family: var(--serif);
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeUp 1s ease forwards 0.5s;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            max-width: 620px;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeUp 1s ease forwards 0.7s;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-dim);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeUp 1s ease forwards 1s;
+            cursor: pointer;
+        }
+
+        .scroll-indicator::after {
+            content: '';
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--text-dim), transparent);
+            animation: scrollLine 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollLine {
+            0%, 100% { transform: scaleY(1); opacity: 1; }
+            50% { transform: scaleY(0.5); opacity: 0.3; }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Atom-Bit Visual */
+        .atom-bit-visual {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .atom {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--text);
+            border-radius: 50%;
+            animation: atomPulse 4s ease-in-out infinite;
+        }
+
+        .bit {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--accent);
+            animation: bitRotate 20s linear infinite;
+        }
+
+        .bit::before,
+        .bit::after {
+            content: '';
+            position: absolute;
+            border: 1px solid var(--accent);
+            opacity: 0.4;
+        }
+
+        .bit::before {
+            width: 28px;
+            height: 28px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+
+        .bit::after {
+            width: 50px;
+            height: 50px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes atomPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        @keyframes bitRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .team-member {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border: 1px solid #222;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+        }
+
+        .team-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 0.3rem 0.6rem;
+            border: 1px solid;
+        }
+
+        .team-badge.payroll {
+            color: var(--green);
+            border-color: var(--green);
+        }
+
+        .team-badge.associate {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .team-member h3 {
+            font-family: var(--serif);
+            font-size: 1.4rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-member .role {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .team-member p {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        /* Trap Section */
+        .trap-section {
+            background: linear-gradient(180deg, var(--bg) 0%, var(--bg-secondary) 50%, var(--bg) 100%);
+        }
+
+        .trap-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .trap-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        .trap-visual {
+            position: relative;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lookalike-stack {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .lookalike-card {
+            position: absolute;
+            width: 100%;
+            padding: 2rem;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            text-align: center;
+            font-family: var(--sans);
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            transition: all 0.5s ease;
+        }
+
+        .lookalike-card:nth-child(1) { transform: rotate(-8deg) translateY(-20px); opacity: 0.4; }
+        .lookalike-card:nth-child(2) { transform: rotate(-4deg) translateY(-10px); opacity: 0.6; }
+        .lookalike-card:nth-child(3) { transform: rotate(0deg); opacity: 0.8; }
+        .lookalike-card:nth-child(4) { transform: rotate(4deg) translateY(10px); opacity: 0.6; }
+        .lookalike-card:nth-child(5) { transform: rotate(8deg) translateY(20px); opacity: 0.4; }
+
+        .trap-text blockquote {
+            font-family: var(--serif);
+            font-size: 1.5rem;
+            font-style: italic;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+            border-left: 2px solid var(--accent);
+        }
+
+        .trap-text p {
+            color: var(--text-dim);
+            margin-bottom: 1rem;
+        }
+
+        /* Gap Section */
+        .gap-statement {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .gap-opener {
+            font-family: var(--serif);
+            font-size: 1.3rem;
+            color: var(--text-dim);
+            margin-bottom: 0.5rem;
+        }
+
+        .gap-response {
+            font-family: var(--serif);
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            color: var(--text);
+        }
+
+        .gap-response em {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        .gap-story {
+            max-width: 650px;
+            margin: 0 auto 3rem;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .model-pillars {
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            gap: 0;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .pillar {
+            flex: 1;
+            min-width: 200px;
+            max-width: 280px;
+            padding: 2rem;
+            background: var(--bg-secondary);
+            border: 1px solid #222;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pillar:hover {
+            border-color: var(--accent);
+        }
+
+        .pillar-number {
+            display: block;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .pillar p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--text);
+        }
+
+        .pillar-connector {
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .pillar-connector::before {
+            content: '+';
+        }
+
+        @media (max-width: 900px) {
+            .model-pillars {
+                flex-direction: column;
+                align-items: center;
+            }
+            .pillar {
+                max-width: 100%;
+            }
+            .pillar-connector {
+                width: 100%;
+                height: 40px;
+            }
+        }
+
+        .gap-proof {
+            text-align: center;
+            margin: 3rem 0;
+            padding: 2rem 0;
+            border-top: 1px solid #222;
+            border-bottom: 1px solid #222;
+        }
+
+        .proof-statement {
+            font-family: var(--serif);
+            font-size: 1.4rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .proof-evidence {
+            color: var(--text-dim);
+            font-size: 1rem;
+        }
+
+        .proof-evidence .stat {
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .choice-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .choice-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .choice {
+            padding: 2rem;
+            border: 1px solid #333;
+            position: relative;
+        }
+
+        .choice-label {
+            display: block;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 1rem;
+        }
+
+        .choice p {
+            font-family: var(--serif);
+            font-size: 1.3rem;
+        }
+
+        .choice p em {
+            font-style: italic;
+        }
+
+        .choice.them {
+            opacity: 0.6;
+        }
+
+        .choice.them p em {
+            color: var(--text-dim);
+        }
+
+        .choice.us {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, var(--accent-dim) 0%, transparent 50%);
+        }
+
+        .choice.us p em {
+            color: var(--accent);
+        }
+
+        .choice-subtext {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            font-style: italic;
+        }
+
+        /* Engine Section */
+        .engine-section {
+            background: var(--bg-secondary);
+        }
+
+        /* Carousel */
+        .carousel-frame {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .carousel-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .carousel-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+        }
+
+        .slide-indicators {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            width: 24px;
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        .carousel-content {
+            position: relative;
+            min-height: 380px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2.5rem 3rem;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            max-width: 500px;
+            text-align: left;
+        }
+
+        .slide.active {
+            display: block;
+            animation: slideIn 0.4s ease-in;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-number {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        .slide h2 {
+            font-family: var(--serif);
+            font-size: 1.5rem;
+            font-weight: 400;
+            line-height: 1.3;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .slide h2 .highlight {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        .slide p {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--text-dim);
+            margin-bottom: 1rem;
+        }
+
+        .slide p .sentence {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .slide p .sentence:last-child {
+            margin-bottom: 0;
+        }
+
+        .slide p strong {
+            color: var(--text);
+        }
+
+        .slide ul {
+            list-style: none;
+            margin: 1.25rem 0;
+            max-width: 100%;
+        }
+
+        .slide li {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-dim);
+            margin-bottom: 0.6rem;
+            padding-left: 1.25rem;
+            position: relative;
+        }
+
+        .slide li:before {
+            content: "—";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        .slide li strong {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .slide .result {
+            font-family: var(--serif);
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--accent);
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            display: block;
+        }
+
+        .screenshot-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 0;
+        }
+
+        .screenshot-frame {
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            background: var(--bg);
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screenshot-label {
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+
+        .carousel-controls {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-hint {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            letter-spacing: 0.05em;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-button {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            font-family: var(--sans);
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-button:hover:not(:disabled) {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .nav-arrow {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        @media (max-width: 600px) {
+            .carousel-content {
+                padding: 2rem 1.5rem;
+                min-height: 420px;
+            }
+            .slide {
+                max-width: 100%;
+            }
+            .slide h2 {
+                font-size: 1.25rem;
+            }
+            .nav-hint {
+                display: none;
+            }
+        }
+
+        .video-placeholder {
+            aspect-ratio: 16/9;
+            background: var(--bg);
+            border: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .video-placeholder:hover {
+            border-color: var(--accent);
+        }
+
+        .video-placeholder::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent 40%, var(--accent-dim) 50%, transparent 60%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .play-button {
+            width: 80px;
+            height: 80px;
+            border: 2px solid var(--text);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .video-placeholder:hover .play-button {
+            border-color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .play-button::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 20px solid var(--text);
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            margin-left: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        .video-placeholder:hover .play-button::after {
+            border-left-color: var(--accent);
+        }
+
+        .video-label {
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Promise Section */
+        .promise-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .promise-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .promise-column h3 {
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #333;
+        }
+
+        .promise-column.yes h3 {
+            color: var(--green);
+            border-color: var(--green);
+        }
+
+        .promise-column.no h3 {
+            color: var(--red);
+            border-color: var(--red);
+        }
+
+        .promise-column ul {
+            list-style: none;
+        }
+
+        .promise-column li {
+            padding: 0.75rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .promise-column li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .promise-column.yes li::before {
+            background: var(--green);
+        }
+
+        .promise-column.no li::before {
+            background: var(--red);
+        }
+
+        .promise-column.no .amber-list li::before {
+            background: #f59e0b !important;
+        }
+
+        /* Spine Section */
+        .spine-section {
+            text-align: center;
+        }
+
+        .spine-question {
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 1rem;
+        }
+
+        .spine-answer {
+            font-family: var(--serif);
+            font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+            font-weight: 400;
+            line-height: 1.4;
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .spine-answer em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: var(--accent);
+            margin: 3rem auto;
+        }
+
+        .spine-coda {
+            max-width: 500px;
+            margin: 0 auto 2rem;
+            text-align: center;
+        }
+
+        .coda-line {
+            font-family: var(--serif);
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: var(--text-dim);
+            margin-bottom: 0.5rem;
+        }
+
+        .coda-line:last-child {
+            color: var(--text);
+        }
+
+        .coda-line em {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        /* ============================================
+           TRANSITION SECTION
+           ============================================ */
+        .transition-section {
+            background: linear-gradient(180deg, var(--bg) 0%, var(--bg-secondary) 50%, var(--bg) 100%);
+            text-align: center;
+        }
+
+        .transition-section .section-inner {
+            max-width: 700px;
+        }
+
+        .transition-subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* ============================================
+           PART 2: BUILDING BRANDS THAT LAST
+           ============================================ */
+
+        /* Discovery Section */
+        .discovery-fragments {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .discovery-fragments {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .fragment {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .fragment.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .fragment-type {
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .fragment-quote {
+            font-family: var(--serif);
+            font-size: 1rem;
+            font-style: italic;
+            line-height: 1.5;
+            color: var(--text-dim);
+        }
+
+        /* Category Section */
+        .category-spectrum {
+            display: flex;
+            align-items: stretch;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .category-spectrum {
+                flex-direction: column;
+            }
+        }
+
+        .spectrum-pole {
+            flex: 1;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+
+        .spectrum-pole h3 {
+            font-family: var(--serif);
+            font-size: 1.3rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .spectrum-pole p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .spectrum-center {
+            flex: 1.2;
+            background: var(--teal);
+            border: 2px solid var(--accent);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .spectrum-center::before {
+            content: '↑';
+            position: absolute;
+            bottom: -2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        .spectrum-center h3 {
+            font-family: var(--serif);
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        .spectrum-center p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .spectrum-insight {
+            text-align: center;
+            margin-top: 4rem;
+            font-family: var(--serif);
+            font-size: 1.2rem;
+            color: var(--text-dim);
+        }
+
+        .spectrum-insight em {
+            color: var(--text);
+            font-style: italic;
+        }
+
+        /* Brand Strategy Pyramid */
+        .brand-pyramid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .pyramid-layer {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 1.25rem 2rem;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .pyramid-layer.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .pyramid-layer h4 {
+            font-family: var(--sans);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #1a1a1a;
+        }
+
+        .pyramid-layer p {
+            font-size: 0.85rem;
+            color: #888;
+            font-style: italic;
+        }
+
+        .pyramid-pillars {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .pyramid-pillars {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .pyramid-pillars .pyramid-layer {
+            padding: 1.25rem 1rem;
+        }
+
+        /* Creative Brief */
+        .example-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .brief-elegant {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .brief-row {
+            display: flex;
+            align-items: baseline;
+            gap: 2rem;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brief-row:last-child {
+            border-bottom: none;
+        }
+
+        .brief-key {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            color: var(--accent);
+            min-width: 50px;
+        }
+
+        .brief-value {
+            font-family: var(--serif);
+            font-size: 1.25rem;
+            line-height: 1.5;
+            color: var(--text);
+        }
+
+        @media (max-width: 600px) {
+            .brief-row {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Territory Explorer */
+        .territory-intro {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        .explorer-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            min-height: 600px;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+        }
+
+        @media (max-width: 900px) {
+            .explorer-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .territory-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            position: relative;
+        }
+
+        .territory-card {
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .territory-number {
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            color: var(--text-dim);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s ease;
+        }
+
+        .territory-number.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .territory-strap {
+            font-family: var(--serif);
+            font-size: clamp(1.6rem, 3vw, 2.5rem);
+            font-weight: 400;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            min-height: 3em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .territory-strap span {
+            display: block;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .territory-strap span.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .territory-manifesto {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            max-width: 450px;
+            margin: 0 auto;
+            min-height: 4em;
+        }
+
+        .territory-manifesto span {
+            display: block;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+        }
+
+        .territory-manifesto span.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .coordinates {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 1.5rem;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+            font-family: monospace;
+        }
+
+        .coordinates span {
+            color: var(--accent);
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: var(--bg);
+            border-left: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .panel-header h2 {
+            font-family: var(--serif);
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 0.25rem;
+        }
+
+        .panel-header p {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .axis-controls {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .axis-question {
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .axis-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .axis-label {
+            flex: 1;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            padding: 0.4rem;
+            border-radius: 4px;
+        }
+
+        .axis-label:hover {
+            background: var(--accent-dim);
+        }
+
+        .axis-label.left {
+            text-align: right;
+        }
+
+        .axis-label.right {
+            text-align: left;
+        }
+
+        .axis-label.active {
+            color: var(--accent);
+        }
+
+        .axis-label.inactive {
+            color: var(--text-dim);
+        }
+
+        .toggle-track {
+            width: 50px;
+            height: 26px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            position: relative;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: border-color 0.3s ease;
+        }
+
+        .toggle-track:hover {
+            border-color: var(--accent);
+        }
+
+        .toggle-thumb {
+            position: absolute;
+            top: 3px;
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            border-radius: 50%;
+            transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .toggle-thumb.left {
+            left: 3px;
+        }
+
+        .toggle-thumb.right {
+            left: 27px;
+        }
+
+        .discovery-section {
+            margin-top: auto;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .discovery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .discovery-header h3 {
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+
+        .discovery-count {
+            font-size: 0.8rem;
+            color: var(--accent);
+        }
+
+        .discovery-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 4px;
+        }
+
+        .discovery-cell {
+            aspect-ratio: 1;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .discovery-cell.discovered {
+            background: var(--accent-dim);
+            border-color: var(--accent);
+        }
+
+        .discovery-cell.current {
+            background: var(--accent);
+        }
+
+        .discovery-cell:hover:not(.current) {
+            border-color: var(--text-dim);
+        }
+
+        .discovery-cell .cell-number {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.55rem;
+            color: var(--text-dim);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .discovery-cell:hover .cell-number,
+        .discovery-cell.discovered .cell-number {
+            opacity: 1;
+        }
+
+        .discovery-cell.current .cell-number {
+            color: var(--bg);
+        }
+
+        /* Handoff Section */
+        .handoff-package {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        @media (max-width: 600px) {
+            .handoff-package {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .handoff-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+        }
+
+        .handoff-item h4 {
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .handoff-item p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* CTAs */
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .cta-button {
+            padding: 1rem 2rem;
+            font-family: var(--sans);
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-decoration: none;
+            border: 1px solid;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .cta-button.primary {
+            background: var(--accent);
+            color: var(--bg);
+            border-color: var(--accent);
+        }
+
+        .cta-button.primary:hover {
+            background: transparent;
+            color: var(--accent);
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            color: var(--text);
+            border-color: #333;
+        }
+
+        .cta-button.secondary:hover {
+            border-color: var(--text);
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
+        footer p {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============================================
+           WORKSHOPS SECTION
+           ============================================ */
+        .workshops-section {
+            background: linear-gradient(180deg, var(--bg) 0%, var(--bg-secondary) 50%, var(--bg) 100%);
+        }
+
+        .workshops-section .section-inner {
+            max-width: 1100px;
+        }
+
+        .workshop-subtitle {
+            font-family: var(--serif);
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            color: var(--accent);
+            margin-bottom: 3rem;
+        }
+
+        .workshop-intro {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+            margin-bottom: 4rem;
+        }
+
+        @media (max-width: 800px) {
+            .workshop-intro { grid-template-columns: 1fr; gap: 2rem; }
+        }
+
+        .workshop-intro-lead {
+            font-family: var(--serif);
+            font-size: 1.4rem;
+            line-height: 1.5;
+            color: var(--text);
+        }
+
+        .workshop-intro-body p {
+            color: var(--text-dim);
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .workshop-intro-body p:last-child { margin-bottom: 0; }
+        .workshop-intro-body strong { color: var(--text); }
+
+        .case-study-box {
+            padding-top: 4rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .case-label-small {
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 0.5rem;
+        }
+
+        .case-title-small {
+            font-family: var(--serif);
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+        }
+
+        .case-intro-text {
+            color: var(--text-dim);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            max-width: 700px;
+            margin-bottom: 3rem;
+        }
+
+        .case-carousel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .case-carousel .carousel-content {
+            position: relative;
+            min-height: 450px;
+            padding: 0;
+        }
+
+        .case-carousel .slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            max-width: none;
+            text-align: left;
+        }
+
+        .case-carousel .slide.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Slide 1: Mission */
+        .slide-mission {
+            background: linear-gradient(135deg, #2d4a5e 0%, #1a3040 50%, #3d5a6e 100%);
+            min-height: 450px;
+            padding: 3rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .mission-left h3 {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            display: inline-block;
+            padding-bottom: 0.25rem;
+        }
+
+        .mission-left p {
+            font-family: var(--sans);
+            font-size: clamp(1.4rem, 2.5vw, 2rem);
+            font-weight: 600;
+            line-height: 1.3;
+            color: white;
+        }
+
+        .mission-left .highlight-lime {
+            color: #c6ff00;
+        }
+
+        .mission-right {
+            text-align: right;
+        }
+
+        .mission-right p {
+            font-family: var(--sans);
+            font-size: clamp(1.2rem, 2vw, 1.6rem);
+            font-weight: 600;
+            line-height: 1.4;
+            color: white;
+        }
+
+        /* Slide 2: Workshop */
+        .slide-workshop {
+            background: #f5f5f5;
+            min-height: 450px;
+            padding: 2.5rem 3rem;
+            color: #1a1a1a;
+        }
+
+        .workshop-slide-header {
+            margin-bottom: 2rem;
+        }
+
+        .workshop-slide-header h3 {
+            font-family: var(--sans);
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            margin-bottom: 0.25rem;
+            color: #1a1a1a;
+        }
+
+        .workshop-slide-header p {
+            font-family: var(--sans);
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #555;
+        }
+
+        .workshop-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .workshop-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .workshop-card-header {
+            background: #e91e63;
+            color: white;
+            padding: 1rem;
+        }
+
+        .workshop-card-header .num {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .workshop-card-header p {
+            font-size: 0.8rem;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        .workshop-card-body {
+            background: #e0e0e0;
+            padding: 1.25rem 1rem;
+            flex: 1;
+        }
+
+        .workshop-card-body p {
+            font-family: var(--sans);
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 1.3;
+            color: #1a1a1a;
+        }
+
+        /* Slide 3: Funnel */
+        .slide-funnel {
+            background: white;
+            min-height: 450px;
+            padding: 1.5rem 2rem;
+            color: #1a1a1a;
+        }
+
+        .funnel-title {
+            font-family: var(--sans);
+            font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: #1a1a1a;
+        }
+
+        .funnel-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Slide with full image */
+        .slide-image {
+            background: white;
+            min-height: 450px;
+            padding: 1.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-image-header {
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .slide-image-header h3 {
+            font-family: var(--sans);
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            color: #1a1a1a;
+            margin-bottom: 0.25rem;
+        }
+
+        .slide-image-header p {
+            font-family: var(--sans);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            color: #555;
+        }
+
+        .slide-full-image {
+            width: 100%;
+            height: auto;
+            max-height: 380px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .slide-dark {
+            background: #0a0a0a !important;
+        }
+
+        .slide-dark .slide-image-header h3,
+        .slide-dark .slide-image-header p {
+            color: var(--text);
+        }
+
+        .slide-dark .slide-image-header p {
+            color: var(--text-dim);
+        }
+
+        @media (max-width: 700px) {
+            .slide-mission { grid-template-columns: 1fr; padding: 2rem; }
+            .mission-right { text-align: left; }
+            .workshop-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Password Gate -->
+    <div class="password-gate" id="passwordGate">
+        <div class="password-content">
+            <h1>Private Access</h1>
+            <p>This document is prepared exclusively for Atombit.</p>
+            <div class="password-input-wrap">
+                <input type="password" id="passwordInput" placeholder="Enter access code" autocomplete="off">
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-wrapper" id="contentWrapper">
+        
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <a data-target="hero" class="active">Start</a>
+            <a data-target="team">Team</a>
+            <a data-target="trap">Trap</a>
+            <a data-target="gap">Gap</a>
+            <a data-target="engine">Engine</a>
+            <a data-target="promise">Promise</a>
+            <a data-target="spine">Brands</a>
+            <span class="nav-divider"></span>
+            <a data-target="discovery">01</a>
+            <a data-target="category">02</a>
+            <a data-target="brand-strategy">03</a>
+            <a data-target="creative-brief">04</a>
+            <a data-target="territories">05</a>
+            <a data-target="handoff">06</a>
+            <a data-target="workshops">Workshops</a>
+        </nav>
+
+        <!-- ============================================
+             PART 1: THE UNCOMFORTABLE TRUTH
+             ============================================ -->
+
+        <!-- Hero -->
+        <section id="hero" class="hero">
+            <div class="section-inner">
+                <div class="atom-bit-visual">
+                    <span class="atom"></span>
+                    <span class="bit"></span>
+                </div>
+                <p class="hero-eyebrow">Magnus × Atombit</p>
+                <h1>The <em>Uncomfortable</em> Truth</h1>
+                <p class="hero-subtitle">You're restoring human connection in a world that forgot how&nbsp;to&nbsp;listen.<br><br>That mission deserves more than a creative agency's&nbsp;mood&nbsp;board.<br><br>It deserves strategy with&nbsp;teeth.</p>
+            </div>
+            <div class="scroll-indicator" id="scrollPrompt">Scroll</div>
+        </section>
+
+        <!-- Chapter 1: The Team -->
+        <section id="team">
+            <div class="section-inner">
+                <div class="chapter-label">Chapter One</div>
+                <h2 class="section-title fade-in">The <em>Team</em></h2>
+                <p class="fade-in" style="color: var(--text-dim); max-width: 600px; margin-bottom: 1rem;">You asked who's on payroll, who's an associate. Here's the truth — clearly labelled, nothing hidden.</p>
+                
+                <div class="team-grid">
+                    <div class="team-member fade-in">
+                        <span class="team-badge payroll">Payroll</span>
+                        <h3>Teresa Allan</h3>
+                        <p class="role">Managing Partner</p>
+                        <p>Founder. Your strategic lead. Accountable for every deliverable that leaves our hands.</p>
+                    </div>
+                    <div class="team-member fade-in">
+                        <span class="team-badge payroll">Payroll + EMI</span>
+                        <h3>Lindsay Carr</h3>
+                        <p class="role">Full-time</p>
+                        <p>Day-to-day client lead. Six years working with Jason. Four years with Teresa. This is not a freelance assembly.</p>
+                    </div>
+                    <div class="team-member fade-in">
+                        <span class="team-badge payroll">Payroll + EMI</span>
+                        <h3>Jason Ryan</h3>
+                        <p class="role">3 days/week (formally)</p>
+                        <p>Strategic architecture. In practice, contributes well beyond contracted hours. EMI options reflect commitment.</p>
+                    </div>
+                    <div class="team-member fade-in">
+                        <span class="team-badge associate">Associate</span>
+                        <h3>Mark Earls</h3>
+                        <p class="role">Behavioural Strategist</p>
+                        <p>Long-standing partner since Naked days. Specialist horsepower. Here because this brief demands it.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 2: The Trap -->
+        <section id="trap" class="trap-section">
+            <div class="section-inner">
+                <div class="trap-content">
+                    <div class="trap-visual">
+                        <div class="lookalike-stack">
+                            <div class="lookalike-card">"Human-centred AI solutions"</div>
+                            <div class="lookalike-card">"Where technology meets empathy"</div>
+                            <div class="lookalike-card">"Intelligent experiences, human outcomes"</div>
+                            <div class="lookalike-card">"AI-powered customer connection"</div>
+                            <div class="lookalike-card">"The future of experience"</div>
+                        </div>
+                    </div>
+                    <div class="trap-text">
+                        <div class="chapter-label">Chapter Two</div>
+                        <h2 class="section-title fade-in">The <em>Trap</em></h2>
+                        <blockquote class="fade-in">"Everyone in your space claims to bridge human and digital. The words have become meaningless."</blockquote>
+                        <p class="fade-in">Atom + Bit. It's a beautiful idea. But beautiful ideas get buried under generic language every day.</p>
+                        <p class="fade-in">The graveyard of B2B tech is full of companies with compelling origin stories and forgettable market positions.</p>
+                        <p class="fade-in" style="color: var(--text); font-weight: 500;">Your risk isn't too much process. It's a brand that sounds like everyone else who's trying to sound human.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 3: The Gap -->
+        <section id="gap">
+            <div class="section-inner">
+                <div class="chapter-label">Chapter Three</div>
+                <h2 class="section-title fade-in">The <em>Gap</em></h2>
+                
+                <div class="gap-statement">
+                    <p class="gap-opener fade-in">You said we present like a management consultancy.</p>
+                    <p class="gap-response fade-in">That's fair. <em>It's also intentional.</em></p>
+                </div>
+                
+                <div class="gap-story fade-in">
+                    <p>You built Atombit because the world needed someone to bridge human and digital — to restore connection that technology had fractured.</p>
+                    <p style="margin-top: 1rem;">Four years ago, we built Magnus for a parallel reason: creative agencies couldn't close the commercial gap, and consultancies couldn't close the creative one.</p>
+                    <p style="margin-top: 1.5rem; color: var(--text);">We created a new type of consultancy:</p>
+                </div>
+                
+                <div class="model-pillars">
+                    <div class="pillar fade-in">
+                        <span class="pillar-number">01</span>
+                        <p>Rigour of top-tier strategy</p>
+                    </div>
+                    <div class="pillar-connector"></div>
+                    <div class="pillar fade-in">
+                        <span class="pillar-number">02</span>
+                        <p>Imagination and edge of people who've actually worked inside world-class creative agencies</p>
+                    </div>
+                    <div class="pillar-connector"></div>
+                    <div class="pillar fade-in">
+                        <span class="pillar-number">03</span>
+                        <p>Anchored in customer truth, not internal aspiration</p>
+                    </div>
+                </div>
+                
+                <div class="gap-proof fade-in">
+                    <p class="proof-statement">This model didn't exist. So we built it.</p>
+                    <p class="proof-evidence">And it works — which is why we consistently deliver breakthrough positioning and GTM strategies while holding a <span class="stat">+93 NPS</span>.</p>
+                </div>
+                
+                <div class="fade-in">
+                    <div class="choice-row">
+                        <div class="choice them">
+                            <span class="choice-label">Your competitor</span>
+                            <p>will give you <em>energy</em></p>
+                        </div>
+                        <div class="choice us">
+                            <span class="choice-label">We</span>
+                            <p>will give you <em>clarity, edge and meaning</em></p>
+                            <span class="choice-subtext">— the raw material creativity actually depends on</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 4: The Engine -->
+        <section id="engine" class="engine-section">
+            <div class="section-inner">
+                <div class="chapter-label">Chapter Four</div>
+                <h2 class="section-title fade-in">The <em>Engine</em></h2>
+                <p class="fade-in" style="color: var(--text-dim); max-width: 600px;">Magnitude is our proprietary platform for managing brand content. It's what ensures your brand doesn't fragment as you scale across regions, sectors, and acquisitions.</p>
+                
+                <!-- Carousel -->
+                <div class="carousel-frame fade-in">
+                    <div class="carousel-header">
+                        <div class="carousel-title">Magnitude — Our Brand Content Platform</div>
+                        <div class="slide-indicators">
+                            <div class="indicator active" data-slide="0"></div>
+                            <div class="indicator" data-slide="1"></div>
+                            <div class="indicator" data-slide="2"></div>
+                            <div class="indicator" data-slide="3"></div>
+                            <div class="indicator" data-slide="4"></div>
+                        </div>
+                    </div>
+                    <div class="carousel-content">
+                        <!-- Slide 1: The Problem -->
+                        <div class="slide active">
+                            <div class="slide-number">01 / 05</div>
+                            <h2>Your intelligence lives in <span class="highlight">47 places</span></h2>
+                            <p>
+                                <span class="sentence">Brand guidelines in one folder.</span>
+                                <span class="sentence">Customer research in another.</span>
+                                <span class="sentence">Product specs somewhere else.</span>
+                                <span class="sentence">Market data in spreadsheets.</span>
+                                <span class="sentence">Sector insights in someone's head.</span>
+                            </p>
+                            <p><strong>Nothing talks to anything.</strong></p>
+                        </div>
+                        <!-- Slide 2: What Magnitude Is -->
+                        <div class="slide">
+                            <div class="slide-number">02 / 05</div>
+                            <h2>Magnitude is a <span class="highlight">connected knowledge graph</span></h2>
+                            <p>
+                                <span class="sentence">10 schemas — brand, product, market, sector, customer, competitor, and more.</span>
+                                <span class="sentence">All linked.</span>
+                            </p>
+                            <ul>
+                                <li>Not documents. <strong>Structure.</strong></li>
+                                <li>Not storage. <strong>Relationships.</strong></li>
+                                <li>Not a folder. <strong>A single source of truth.</strong></li>
+                            </ul>
+                        </div>
+                        <!-- Slide 3: How It Works -->
+                        <div class="slide">
+                            <div class="slide-number">03 / 05</div>
+                            <h2>Every piece of intelligence has a place.<br>Every connection is <span class="highlight">explicit</span>.</h2>
+                            <p>
+                                <span class="sentence">When you ask a question, you're querying across all 10 schemas at once.</span>
+                            </p>
+                            <p>
+                                <span class="sentence">When you generate content, it pulls from the full picture — not a fragment.</span>
+                            </p>
+                        </div>
+                        <!-- Slide 4: What Changes -->
+                        <div class="slide">
+                            <div class="slide-number">04 / 05</div>
+                            <h2>Everything connects to <span class="highlight">everything</span></h2>
+                            <ul>
+                                <li>Your customer insight shapes your messaging</li>
+                                <li>Your product evolution updates your positioning</li>
+                                <li>Your market data informs your tone</li>
+                            </ul>
+                            <p class="result">One source of truth that actually behaves like one.</p>
+                        </div>
+                        <!-- Slide 5: Screenshot -->
+                        <div class="slide">
+                            <div class="slide-number">05 / 05</div>
+                            <div class="screenshot-placeholder">
+                                <img src="magnitude-screenshot.png" alt="Magnitude Platform" style="width: 100%; border-radius: 8px; border: 1px solid var(--border);">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-controls">
+                        <div class="nav-hint">Use arrows or swipe</div>
+                        <div class="nav-buttons">
+                            <button class="nav-button" id="prevBtn" disabled>
+                                <svg class="nav-arrow" viewBox="0 0 24 24">
+                                    <polyline points="15 18 9 12 15 6"></polyline>
+                                </svg>
+                                Prev
+                            </button>
+                            <button class="nav-button" id="nextBtn">
+                                Next
+                                <svg class="nav-arrow" viewBox="0 0 24 24">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="fade-in" style="color: var(--text-dim); margin-top: 1rem; font-size: 0.9rem;">Want the full demo? We'll book 20 minutes whenever suits.</p>
+            </div>
+        </section>
+
+        <!-- Chapter 5: The Promise -->
+        <section id="promise">
+            <div class="section-inner">
+                <div class="chapter-label">Chapter Five</div>
+                <h2 class="section-title fade-in">The <em>Promise</em></h2>
+                <p class="fade-in" style="color: var(--text-dim); max-width: 600px; margin-bottom: 1rem;">Complete clarity on what you're buying — and what you're not.</p>
+                
+                <div class="promise-grid">
+                    <div class="promise-column yes fade-in">
+                        <h3>What we deliver</h3>
+                        <ul>
+                            <li>Full brand strategy and positioning</li>
+                            <li>Narrative architecture</li>
+                            <li>Value proposition framework</li>
+                            <li>Complete verbal identity</li>
+                            <li>Creative brief package</li>
+                            <li>Messaging hierarchy</li>
+                            <li>Tone of voice guidelines</li>
+                            <li>Internal activation plan</li>
+                            <li>Stakeholder alignment</li>
+                            <li>Strategic support through creative execution</li>
+                            <li>Weekly check-ins with your creative agency</li>
+                        </ul>
+                    </div>
+                    <div class="promise-column no fade-in">
+                        <h3>What we don't</h3>
+                        <ul>
+                            <li>Visual design or identity systems</li>
+                            <li>Logos, typography, colour palettes</li>
+                            <li>Photography or graphic direction</li>
+                        </ul>
+                        <h3 style="margin-top: 2rem; color: #f59e0b; border-color: #f59e0b;">Not in scope</h3>
+                        <ul class="amber-list">
+                            <li>ABM programme build or execution</li>
+                            <li>GTM narrative beyond brand strategy scope</li>
+                            <li>Segmentation models (unless added)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 6: Building Brands -->
+        <section id="spine">
+            <div class="section-inner">
+                <div class="chapter-label">Chapter Six</div>
+                <h2 class="section-title fade-in">Building brands <em>that last</em></h2>
+                
+                <div class="fade-in" style="margin-top: 3rem; max-width: 600px;">
+                    <p style="font-family: var(--serif); font-size: 1.25rem; line-height: 1.6; color: var(--text-dim);">You restore human connection in a world of noise.</p>
+                    <p style="font-family: var(--serif); font-size: 1.25rem; line-height: 1.6; color: var(--text); margin-top: 1.5rem;">Here's how we will help you make people <em>feel</em> it.</p>
+                </div>
+                
+            </div>
+        </section>
+
+        <!-- ============================================
+             PART 2: THE PROCESS
+             ============================================ -->
+
+        <!-- Phase 01: Discovery -->
+        <section id="discovery">
+            <div class="section-inner">
+                <div class="chapter-label">Phase 01</div>
+                <h2 class="section-title fade-in">First, <em>we listen</em></h2>
+                <p class="fade-in" style="color: var(--text-dim); max-width: 600px; margin-bottom: 2rem;">Before we create anything, we hear everything. The tensions. The frustrations. The signals your competitors miss.</p>
+                
+                <div class="discovery-fragments">
+                    <div class="fragment" data-delay="0">
+                        <div class="fragment-type">Customer signal</div>
+                        <div class="fragment-quote">"We tried three vendors. They all promised AI. None of them understood our actual problem."</div>
+                    </div>
+                    <div class="fragment" data-delay="100">
+                        <div class="fragment-type">Internal tension</div>
+                        <div class="fragment-quote">"Are we a tech company or a consultancy? We keep getting asked and we don't have a clear answer."</div>
+                    </div>
+                    <div class="fragment" data-delay="200">
+                        <div class="fragment-type">Market observation</div>
+                        <div class="fragment-quote">"Everyone claims to be human-centred. The words have become meaningless."</div>
+                    </div>
+                    <div class="fragment" data-delay="300">
+                        <div class="fragment-type">Buyer frustration</div>
+                        <div class="fragment-quote">"The big consultancies take forever. The startups can't handle our complexity. There's no one in the middle."</div>
+                    </div>
+                    <div class="fragment" data-delay="400">
+                        <div class="fragment-type">Employee insight</div>
+                        <div class="fragment-quote">"We do something genuinely different. We just haven't found the words for it yet."</div>
+                    </div>
+                    <div class="fragment" data-delay="500">
+                        <div class="fragment-type">Competitive gap</div>
+                        <div class="fragment-quote">"The space between strategy and execution is where all the value leaks out."</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 02: Category Definition -->
+        <section id="category">
+            <div class="section-inner">
+                <div class="chapter-label">Phase 02</div>
+                <h2 class="section-title fade-in">We find the <em>white space</em></h2>
+                <p class="fade-in" style="color: var(--text-dim); max-width: 600px; margin-bottom: 2rem;">The gap in the market that only you can own. The position your competitors can't reach.</p>
+                
+                <div class="category-spectrum">
+                    <div class="spectrum-pole">
+                        <h3>🏛 Big Four</h3>
+                        <p>Strategic depth, but slow (6-12 months), expensive, and extractive.</p>
+                    </div>
+                    <div class="spectrum-center">
+                        <h3>atombit</h3>
+                        <p>Strategic depth at speed. AI-enabled human connection. Capability transferred.</p>
+                    </div>
+                    <div class="spectrum-pole">
+                        <h3>🤖 AI Startups</h3>
+                        <p>Fast, but impersonal, narrow, and transactional. Technology-first.</p>
+                    </div>
+                </div>
+                
+                <p class="spectrum-insight fade-in">Big Four are too slow. AI startups are too narrow.<br><em>atombit sits in the white space where neither can reach.</em></p>
+            </div>
+        </section>
+
+        <!-- Phase 03: Brand Strategy -->
+        <section id="brand-strategy">
+            <div class="section-inner">
+                <div class="chapter-label">Phase 03</div>
+                <h2 class="section-title fade-in">We build the <em>spine</em></h2>
+                <p class="fade-in" style="color: var(--text-dim); max-width: 600px; margin-bottom: 2rem;">The architecture that makes creative work sharper. Every execution traces back to this.</p>
+                
+                <div class="brand-pyramid">
+                    <div class="pyramid-layer" data-delay="0">
+                        <h4>Purpose</h4>
+                        <p>Why we exist for our customers beyond making money.</p>
+                    </div>
+                    <div class="pyramid-layer" data-delay="100">
+                        <h4>Positioning</h4>
+                        <p>Where we play and how we're distinct in the market.</p>
+                    </div>
+                    <div class="pyramid-layer" data-delay="200">
+                        <h4>Value Proposition</h4>
+                        <p>The clear promise of value we make to customers.</p>
+                    </div>
+                    <div class="pyramid-pillars">
+                        <div class="pyramid-layer" data-delay="300">
+                            <h4>Brand Pillar 1</h4>
+                            <p>How we deliver on the promise</p>
+                        </div>
+                        <div class="pyramid-layer" data-delay="400">
+                            <h4>Brand Pillar 2</h4>
+                            <p>How we deliver on the promise</p>
+                        </div>
+                        <div class="pyramid-layer" data-delay="500">
+                            <h4>Brand Pillar 3</h4>
+                            <p>How we deliver on the promise</p>
+                        </div>
+                    </div>
+                    <div class="pyramid-layer" data-delay="600">
+                        <h4>Reasons to Believe</h4>
+                        <p>Proof points that show we can deliver what we promise.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 04: Creative Brief -->
+        <section id="creative-brief">
+            <div class="section-inner">
+                <div class="chapter-label">Phase 04</div>
+                <h2 class="section-title fade-in">We fuel the <em>creatives</em></h2>
+                <p class="fade-in" style="color: var(--text-dim); max-width: 600px; margin-bottom: 2rem;">The brief is simple. Four lines. Everything a creative team needs to be brave.</p>
+                
+                <div class="example-label">Example: How a brief for Atombit might read</div>
+                
+                <div class="brief-elegant">
+                    <div class="brief-row">
+                        <span class="brief-key">GET</span>
+                        <span class="brief-value">C-Suite leaders in complex enterprises who've been burned by slow consultancies and shallow tech vendors.</span>
+                    </div>
+                    <div class="brief-row">
+                        <span class="brief-key">WHO</span>
+                        <span class="brief-value">Need strategic depth but can't wait 12 months. Need AI capability but can't sacrifice the human nuance their customers expect.</span>
+                    </div>
+                    <div class="brief-row">
+                        <span class="brief-key">TO</span>
+                        <span class="brief-value">Believe that Atombit is the only partner that combines the rigour of top-tier strategy with the speed and intelligence of AI.</span>
+                    </div>
+                    <div class="brief-row">
+                        <span class="brief-key">BY</span>
+                        <span class="brief-value">Positioning Atombit as the white space between the Big Four and AI startups — where human connection meets machine capability.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 05: Territory Exploration -->
+        <section id="territories" style="min-height: auto; padding-bottom: 2rem;">
+            <div class="section-inner" style="max-width: 1100px;">
+                <div class="territory-intro">
+                    <div class="chapter-label" style="justify-content: center;">Phase 05</div>
+                    <h2 class="section-title fade-in" style="text-align: center;">We map the <em>possibilities</em></h2>
+                    <p class="fade-in" style="color: var(--text-dim); margin: 0 auto 2rem; text-align: center;">Creative direction isn't guesswork. It's chosen from mapped territory. Four tensions. Sixteen ways in.</p>
+                    <div class="example-label" style="text-align: center;">Example: How we might explore creative territories</div>
+                </div>
+                
+                <div class="explorer-container">
+                    <!-- Territory Display -->
+                    <div class="territory-display">
+                        <div class="territory-card">
+                            <div class="territory-number" id="territoryNumber">TERRITORY 01 OF 16</div>
+                            <div class="territory-strap">
+                                <span id="territoryStrap">"Machines forgot you. We didn't."</span>
+                            </div>
+                            <div class="territory-manifesto">
+                                <span id="territoryManifesto">Somewhere between the chatbot and the dashboard, you became a number. A ticket. A segment of one. We're not here to optimise your experience. We're here to remember you exist.</span>
+                            </div>
+                        </div>
+                        <div class="coordinates">
+                            [<span id="coord1">W</span>.<span id="coord2">C</span>.<span id="coord3">P</span>.<span id="coord4">S</span>]
+                        </div>
+                    </div>
+
+                    <!-- Control Panel -->
+                    <div class="control-panel">
+                        <div class="panel-header">
+                            <h2>Tune the territory</h2>
+                            <p>Four tensions. Sixteen possibilities.</p>
+                        </div>
+
+                        <div class="axis-controls">
+                            <div class="axis">
+                                <div class="axis-question">Does it feel or think?</div>
+                                <div class="axis-toggle">
+                                    <div class="axis-label left active" data-axis="0" data-value="0">Warmth</div>
+                                    <div class="toggle-track" data-axis="0">
+                                        <div class="toggle-thumb left"></div>
+                                    </div>
+                                    <div class="axis-label right inactive" data-axis="0" data-value="1">Precision</div>
+                                </div>
+                            </div>
+
+                            <div class="axis">
+                                <div class="axis-question">Does it push or pull?</div>
+                                <div class="axis-toggle">
+                                    <div class="axis-label left active" data-axis="1" data-value="0">Challenger</div>
+                                    <div class="toggle-track" data-axis="1">
+                                        <div class="toggle-thumb left"></div>
+                                    </div>
+                                    <div class="axis-label right inactive" data-axis="1" data-value="1">Sage</div>
+                                </div>
+                            </div>
+
+                            <div class="axis">
+                                <div class="axis-question">Does it suggest or state?</div>
+                                <div class="axis-toggle">
+                                    <div class="axis-label left active" data-axis="2" data-value="0">Poetic</div>
+                                    <div class="toggle-track" data-axis="2">
+                                        <div class="toggle-thumb left"></div>
+                                    </div>
+                                    <div class="axis-label right inactive" data-axis="2" data-value="1">Pragmatic</div>
+                                </div>
+                            </div>
+
+                            <div class="axis">
+                                <div class="axis-question">Is it one or many?</div>
+                                <div class="axis-toggle">
+                                    <div class="axis-label left active" data-axis="3" data-value="0">Singular</div>
+                                    <div class="toggle-track" data-axis="3">
+                                        <div class="toggle-thumb left"></div>
+                                    </div>
+                                    <div class="axis-label right inactive" data-axis="3" data-value="1">Systemic</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="discovery-section">
+                            <div class="discovery-header">
+                                <h3>Discovered</h3>
+                                <span class="discovery-count"><span id="discoveredCount">1</span> / 16</span>
+                            </div>
+                            <div class="discovery-grid" id="discoveryGrid"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 06: Handoff -->
+        <section id="handoff" style="text-align: center;">
+            <div class="section-inner">
+                <div class="chapter-label" style="justify-content: center;">Phase 06</div>
+                <h2 class="section-title fade-in">You leave <em>ready to build</em></h2>
+                <p class="fade-in" style="color: var(--text-dim); max-width: 600px; margin: 0 auto 2rem;">We don't disappear. We hand your creative agency everything they need — and stay to help guide it.</p>
+                
+                <div class="handoff-package">
+                    <div class="handoff-item">
+                        <h4>Brand Strategy</h4>
+                        <p>Purpose, positioning, value proposition, pillars, and proof points — the complete strategic architecture.</p>
+                    </div>
+                    <div class="handoff-item">
+                        <h4>Creative Brief</h4>
+                        <p>Audience, insight, proposition, tone, constraints — everything the creative team needs to begin.</p>
+                    </div>
+                    <div class="handoff-item">
+                        <h4>Territory Recommendations</h4>
+                        <p>2-3 shortlisted creative territories with rationale, manifestos, and strategic fit assessment.</p>
+                    </div>
+                    <div class="handoff-item">
+                        <h4>Ongoing Support</h4>
+                        <p>Weekly check-ins through creative development. We protect strategic integrity and challenge where necessary.</p>
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+
+        <!-- Workshops Section -->
+        <section id="workshops" class="workshops-section">
+            <div class="section-inner">
+                <div class="chapter-label">Our Approach</div>
+                <h2 class="section-title fade-in">How we run <em>workshops</em></h2>
+                <p class="workshop-subtitle fade-in"><em>Environment matters.</em></p>
+                
+                <div class="workshop-intro">
+                    <div class="workshop-intro-lead fade-in">We create the conditions where real thinking happens. Where people leave the room having genuinely shifted—not just ticked a box.</div>
+                    <div class="workshop-intro-body fade-in">
+                        <p>Between the four of us, we've facilitated hundreds of creative workshops across every kind of organization you can imagine. From senior leadership teams to company-wide engagements, from startups finding their footing to global brands reimagining their future.</p>
+                        <p>What we've learned is that <strong>no two challenges call for the same approach.</strong> So we've built a deep toolbox of techniques and we select the right ones for your needs and your culture.</p>
+                        <p>Sometimes that means props and provocation. Sometimes it means bringing in actors to make an idea visceral. Sometimes it means storytelling that reframes how people see a problem. We've run sessions that gaze boldly into the future—and others that ask harder questions about what's right in front of us.</p>
+                    </div>
+                </div>
+                
+                <div class="case-study-box fade-in">
+                    <div class="case-label-small">Example</div>
+                    <h3 class="case-title-small">Nike Move to Zero</h3>
+                    <p class="case-intro-text">Nike came to us with a challenge: how do you bring their Move to Zero sustainability commitment to life in a retail environment? Not as a poster on the wall, but as something customers actually feel and connect with.</p>
+                    
+                    <div class="case-carousel">
+                        <div class="carousel-header">
+                            <div class="carousel-title">Workshop Journey</div>
+                            <div class="slide-indicators" id="workshopIndicators">
+                                <div class="indicator active" data-slide="0"></div>
+                                <div class="indicator" data-slide="1"></div>
+                                <div class="indicator" data-slide="2"></div>
+                            </div>
+                        </div>
+                        <div class="carousel-content" id="workshopCarouselContent">
+                            <!-- Slide 1: Mission -->
+                            <div class="slide slide-mission active">
+                                <div class="mission-left">
+                                    <h3>Mission</h3>
+                                    <p>We are on a journey towards zero carbon and zero waste to help <span class="highlight-lime">protect the future of sport.</span></p>
+                                </div>
+                                <div class="mission-right">
+                                    <p>We are not waiting for solutions.<br>We are creating them.</p>
+                                </div>
+                            </div>
+                            <!-- Slide 2: Workshop -->
+                            <div class="slide slide-image">
+                                <div class="slide-image-header">
+                                    <h3>Ideation Workshop</h3>
+                                    <p>Three objectives, three provocative questions</p>
+                                </div>
+                                <img src="nike-workshop-objectives.png" alt="Workshop Objectives" class="slide-full-image">
+                            </div>
+                            <!-- Slide 3: Funnel -->
+                            <div class="slide slide-image">
+                                <div class="slide-image-header">
+                                    <h3>From over one hundred ideas to 3 fast track experiments</h3>
+                                </div>
+                                <img src="nike-workshop-funnel.png" alt="Idea Funnel" class="slide-full-image">
+                            </div>
+                        </div>
+                        <div class="carousel-controls">
+                            <div class="nav-hint">Use arrows or swipe</div>
+                            <div class="nav-buttons">
+                                <button class="nav-button" id="workshopPrevBtn" disabled>
+                                    <svg class="nav-arrow" viewBox="0 0 24 24">
+                                        <polyline points="15 18 9 12 15 6"></polyline>
+                                    </svg>
+                                    Prev
+                                </button>
+                                <button class="nav-button" id="workshopNextBtn">
+                                    Next
+                                    <svg class="nav-arrow" viewBox="0 0 24 24">
+                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Korn Ferry Case Study -->
+                <div class="case-study-box fade-in" style="margin-top: 5rem;">
+                    <div class="case-label-small">Example</div>
+                    <h3 class="case-title-small">Korn Ferry: <em>RIA</em></h3>
+                    <p class="case-intro-text">The CEO wanted the business to be seen as more AI-forward. Internally, there was no meaningful AI capability. Rather than create a superficial brand veneer, we built something that let customers engage with the brand in a completely new way.</p>
+                    
+                    <div class="case-carousel">
+                        <div class="carousel-header">
+                            <div class="carousel-title">RIA — Research Insight Analyst</div>
+                            <div class="slide-indicators" id="kfIndicators">
+                                <div class="indicator active" data-slide="0"></div>
+                                <div class="indicator" data-slide="1"></div>
+                            </div>
+                        </div>
+                        <div class="carousel-content" id="kfCarouselContent">
+                            <!-- Slide 1: Workforce Hero -->
+                            <div class="slide slide-image active">
+                                <div class="slide-image-header">
+                                    <h3>Workforce 2025: Power Shifts</h3>
+                                    <p>A 10,000-person global workforce survey</p>
+                                </div>
+                                <img src="kf-workforce-hero.png" alt="Korn Ferry Workforce 2025" class="slide-full-image">
+                            </div>
+                            <!-- Slide 2: RIA Interface -->
+                            <div class="slide slide-image slide-dark">
+                                <div class="slide-image-header">
+                                    <h3>RIA: AI Research Assistant</h3>
+                                    <p>We brought the data to life</p>
+                                </div>
+                                <img src="kf-ria-interface.png" alt="RIA AI Interface" class="slide-full-image">
+                            </div>
+                        </div>
+                        <div class="carousel-controls">
+                            <div class="nav-hint">Use arrows or swipe</div>
+                            <div class="nav-buttons">
+                                <button class="nav-button" id="kfPrevBtn" disabled>
+                                    <svg class="nav-arrow" viewBox="0 0 24 24">
+                                        <polyline points="15 18 9 12 15 6"></polyline>
+                                    </svg>
+                                    Prev
+                                </button>
+                                <button class="nav-button" id="kfNextBtn">
+                                    Next
+                                    <svg class="nav-arrow" viewBox="0 0 24 24">
+                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="case-intro-text" style="margin-top: 2rem; margin-bottom: 0;">We didn't run the survey — Korn Ferry already had a 10,000-person global workforce study. We brought that data to life. RIA is an AI-powered analyst we built that sits on their website, allowing visitors to interrogate insights in real time by sector, geography, industry, and hierarchy. Not a brochure — a genuinely useful tool that changed how customers engage with the brand.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Prepared exclusively for Atombit by Magnus Consulting</p>
+        </footer>
+    </div>
+
+    <script>
+        // Password gate
+        const passwordInput = document.getElementById('passwordInput');
+        const passwordGate = document.getElementById('passwordGate');
+        const contentWrapper = document.getElementById('contentWrapper');
+        
+        const correctPassword = 'atombit';
+        
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if (passwordInput.value.toLowerCase() === correctPassword) {
+                    passwordGate.classList.add('hidden');
+                    contentWrapper.classList.add('visible');
+                } else {
+                    passwordInput.style.borderColor = '#f87171';
+                    passwordInput.value = '';
+                    setTimeout(() => {
+                        passwordInput.style.borderColor = '#333';
+                    }, 1000);
+                }
+            }
+        });
+
+        // Territory data
+        const territories = [
+            { id: 1, coords: [0, 0, 0, 0], strap: '"Machines forgot you. We didn\'t."', manifesto: 'Somewhere between the chatbot and the dashboard, you became a number. A ticket. A segment of one. We\'re not here to optimise your experience. We\'re here to remember you exist.' },
+            { id: 2, coords: [0, 0, 0, 1], strap: '"We keep score differently"', manifesto: 'You measure satisfaction. We measure whether anyone would miss you if you disappeared. That\'s not a metric — it\'s a mirror. And most companies can\'t look.' },
+            { id: 3, coords: [0, 0, 1, 0], strap: '"Feelings that file taxes"', manifesto: 'The soft stuff is the hard stuff. Connection isn\'t a brand value — it\'s a balance sheet. We prove it, quarter after quarter, for companies brave enough to care out loud.' },
+            { id: 4, coords: [0, 0, 1, 1], strap: '"Your tech stack has no idea who I am"', manifesto: 'Twelve platforms. Fifteen dashboards. Zero memory. You\'ve spent millions on systems that can\'t remember what I told you yesterday. We fix that. Not with more software. With actual intelligence.' },
+            { id: 5, coords: [0, 1, 0, 0], strap: '"The silence before the goodbye"', manifesto: 'Churn doesn\'t announce itself. It whispers — in the pause before the complaint, the drift in engagement, the quiet retreat. We hear what your dashboards can\'t. The leaving before the left.' },
+            { id: 6, coords: [0, 1, 0, 1], strap: '"Under the data, a person"', manifesto: 'You have a million records. We see a million stories. Every click, every call, every hesitation — fragments of someone trying to be understood. Our job is to make you fluent in them.' },
+            { id: 7, coords: [0, 1, 1, 0], strap: '"We\'ve met your customer before"', manifesto: 'Not a persona. Not an archetype. Them. Twenty years of pattern recognition means we recognise the human your data is trying to describe. We\'ll introduce you.' },
+            { id: 8, coords: [0, 1, 1, 1], strap: '"Happy employees, happy customers. Finally proven."', manifesto: 'Everyone says it. No one connects it. We built the system that shows exactly how internal experience becomes external revenue — so you can stop guessing and start governing.' },
+            { id: 9, coords: [1, 0, 0, 0], strap: '"Sharp enough to be gentle"', manifesto: 'The most advanced intelligence should leave the lightest touch. We engineer precision that disappears — so all that\'s left is a customer who feels known, not processed.' },
+            { id: 10, coords: [1, 0, 0, 1], strap: '"We mapped the space between people and data"', manifesto: 'There\'s a gap where experience gets lost — between what customers feel and what systems see. We built the architecture for that invisible territory. Now we\'re opening it up.' },
+            { id: 11, coords: [1, 0, 1, 0], strap: '"Prove it or it didn\'t happen"', manifesto: 'Experience transformation has a credibility problem. Too much faith, not enough evidence. We only deal in outcomes you can count, defend, and take to the board.' },
+            { id: 12, coords: [1, 0, 1, 1], strap: '"Less dashboard. More done."', manifesto: 'You\'re drowning in insight and starving for action. We built the bridge — from signal to decision to execution, without the six-month strategy project in between.' },
+            { id: 13, coords: [1, 1, 0, 0], strap: '"One signal. Everything changes."', manifesto: 'The breakthrough is never in more data. It\'s in the one pattern everyone missed — the hidden lever that moves the whole system. We\'ve spent twenty years learning where to look.' },
+            { id: 14, coords: [1, 1, 0, 1], strap: '"The geometry of loyalty"', manifesto: 'Relationships have structure. Invisible lines between expectation and delivery, between promise and proof. We see the architecture others can\'t — and we know where it fractures.' },
+            { id: 15, coords: [1, 1, 1, 0], strap: '"Boring works"', manifesto: 'No manifestos. No moon missions. Just two decades of compounding evidence that this approach delivers. We\'re not exciting. We\'re inevitable.' },
+            { id: 16, coords: [1, 1, 1, 1], strap: '"Finally. One system that actually talks to itself."', manifesto: 'CX. EX. Data. AI. For once, connected. For once, coherent. We didn\'t invent experience intelligence — we just made it work like it was always supposed to.' }
+        ];
+
+        const coordLabels = [['W', 'P'], ['C', 'S'], ['P', 'Pr'], ['S', 'Sy']];
+        let currentCoords = [0, 0, 0, 0];
+        let discovered = new Set([1]);
+
+        // DOM elements
+        const territoryNumber = document.getElementById('territoryNumber');
+        const territoryStrap = document.getElementById('territoryStrap');
+        const territoryManifesto = document.getElementById('territoryManifesto');
+        const discoveredCount = document.getElementById('discoveredCount');
+        const discoveryGrid = document.getElementById('discoveryGrid');
+
+        // Initialize explorer
+        function initExplorer() {
+            // Build discovery grid
+            for (let i = 1; i <= 16; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'discovery-cell' + (i === 1 ? ' discovered current' : '');
+                cell.dataset.territory = i;
+                cell.innerHTML = `<span class="cell-number">${i}</span>`;
+                cell.addEventListener('click', () => navigateToTerritory(i));
+                discoveryGrid.appendChild(cell);
+            }
+
+            // Toggle tracks
+            document.querySelectorAll('.toggle-track').forEach(track => {
+                track.addEventListener('click', () => {
+                    const axis = parseInt(track.dataset.axis);
+                    toggleAxis(axis);
+                });
+            });
+
+            // Axis labels
+            document.querySelectorAll('.axis-label').forEach(label => {
+                label.addEventListener('click', () => {
+                    const axis = parseInt(label.dataset.axis);
+                    const value = parseInt(label.dataset.value);
+                    if (currentCoords[axis] !== value) {
+                        toggleAxis(axis);
+                    }
+                });
+            });
+
+            updateDisplay(false);
+        }
+
+        function toggleAxis(axis) {
+            currentCoords[axis] = currentCoords[axis] === 0 ? 1 : 0;
+            
+            const track = document.querySelector(`.toggle-track[data-axis="${axis}"]`);
+            const thumb = track.querySelector('.toggle-thumb');
+            thumb.classList.toggle('left', currentCoords[axis] === 0);
+            thumb.classList.toggle('right', currentCoords[axis] === 1);
+
+            const labels = document.querySelectorAll(`.axis-label[data-axis="${axis}"]`);
+            labels.forEach(l => {
+                const value = parseInt(l.dataset.value);
+                l.classList.toggle('active', value === currentCoords[axis]);
+                l.classList.toggle('inactive', value !== currentCoords[axis]);
+            });
+
+            updateDisplay(true);
+        }
+
+        function navigateToTerritory(id) {
+            const territory = territories.find(t => t.id === id);
+            if (territory) {
+                currentCoords = [...territory.coords];
+                
+                currentCoords.forEach((value, axis) => {
+                    const track = document.querySelector(`.toggle-track[data-axis="${axis}"]`);
+                    const thumb = track.querySelector('.toggle-thumb');
+                    thumb.classList.toggle('left', value === 0);
+                    thumb.classList.toggle('right', value === 1);
+
+                    const labels = document.querySelectorAll(`.axis-label[data-axis="${axis}"]`);
+                    labels.forEach(l => {
+                        const v = parseInt(l.dataset.value);
+                        l.classList.toggle('active', v === value);
+                        l.classList.toggle('inactive', v !== value);
+                    });
+                });
+
+                updateDisplay(true);
+            }
+        }
+
+        function getCurrentTerritory() {
+            return territories.find(t => 
+                t.coords[0] === currentCoords[0] &&
+                t.coords[1] === currentCoords[1] &&
+                t.coords[2] === currentCoords[2] &&
+                t.coords[3] === currentCoords[3]
+            );
+        }
+
+        function updateDisplay(animate) {
+            const territory = getCurrentTerritory();
+            if (!territory) return;
+
+            discovered.add(territory.id);
+            discoveredCount.textContent = discovered.size;
+
+            document.querySelectorAll('.discovery-cell').forEach(cell => {
+                const id = parseInt(cell.dataset.territory);
+                cell.classList.toggle('discovered', discovered.has(id));
+                cell.classList.toggle('current', id === territory.id);
+            });
+
+            document.getElementById('coord1').textContent = coordLabels[0][currentCoords[0]];
+            document.getElementById('coord2').textContent = coordLabels[1][currentCoords[1]];
+            document.getElementById('coord3').textContent = coordLabels[2][currentCoords[2]];
+            document.getElementById('coord4').textContent = coordLabels[3][currentCoords[3]];
+
+            if (animate) {
+                territoryNumber.classList.remove('visible');
+                territoryStrap.classList.remove('visible');
+                territoryManifesto.classList.remove('visible');
+
+                setTimeout(() => {
+                    territoryNumber.textContent = `TERRITORY ${String(territory.id).padStart(2, '0')} OF 16`;
+                    territoryStrap.textContent = territory.strap;
+                    territoryManifesto.textContent = territory.manifesto;
+
+                    requestAnimationFrame(() => {
+                        territoryNumber.classList.add('visible');
+                        territoryStrap.classList.add('visible');
+                        territoryManifesto.classList.add('visible');
+                    });
+                }, 300);
+            } else {
+                territoryNumber.textContent = `TERRITORY ${String(territory.id).padStart(2, '0')} OF 16`;
+                territoryStrap.textContent = territory.strap;
+                territoryManifesto.textContent = territory.manifesto;
+                territoryNumber.classList.add('visible');
+                territoryStrap.classList.add('visible');
+                territoryManifesto.classList.add('visible');
+            }
+        }
+
+        // Scroll animations
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const delay = entry.target.dataset.delay || 0;
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, delay);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+            document.querySelectorAll('.fade-in, .fragment, .pyramid-layer').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Navigation
+        function initNavigation() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.top-nav a');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('data-target');
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (scrollY >= sectionTop - sectionHeight / 3) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('data-target') === current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        }
+
+        // Initialize everything
+        // Carousel
+        function initCarousel() {
+            let currentSlide = 0;
+            const slides = document.querySelectorAll('.slide');
+            const indicators = document.querySelectorAll('.indicator');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const totalSlides = slides.length;
+
+            if (!slides.length) return;
+
+            function updateSlide(index) {
+                slides.forEach((slide, i) => {
+                    slide.classList.toggle('active', i === index);
+                });
+                indicators.forEach((indicator, i) => {
+                    indicator.classList.toggle('active', i === index);
+                });
+                prevBtn.disabled = index === 0;
+                nextBtn.disabled = index === totalSlides - 1;
+            }
+
+            function goToSlide(index) {
+                if (index >= 0 && index < totalSlides) {
+                    currentSlide = index;
+                    updateSlide(currentSlide);
+                }
+            }
+
+            function nextSlide() {
+                if (currentSlide < totalSlides - 1) {
+                    goToSlide(currentSlide + 1);
+                }
+            }
+
+            function prevSlide() {
+                if (currentSlide > 0) {
+                    goToSlide(currentSlide - 1);
+                }
+            }
+
+            nextBtn.addEventListener('click', nextSlide);
+            prevBtn.addEventListener('click', prevSlide);
+
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => goToSlide(index));
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                    prevSlide();
+                } else if (e.key === 'ArrowRight') {
+                    nextSlide();
+                }
+            });
+
+            // Touch/swipe support
+            let touchStartX = null;
+            let touchEndX = null;
+            const carouselContent = document.querySelector('.carousel-content');
+
+            if (carouselContent) {
+                carouselContent.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                });
+
+                carouselContent.addEventListener('touchend', (e) => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    const swipeDistance = touchStartX - touchEndX;
+                    if (swipeDistance > 50) nextSlide();
+                    else if (swipeDistance < -50) prevSlide();
+                    touchStartX = null;
+                    touchEndX = null;
+                });
+            }
+        }
+
+        // Workshop Carousel
+        function initWorkshopCarousel() {
+            let currentSlide = 0;
+            const slides = document.querySelectorAll('#workshops .slide');
+            const indicators = document.querySelectorAll('#workshopIndicators .indicator');
+            const prevBtn = document.getElementById('workshopPrevBtn');
+            const nextBtn = document.getElementById('workshopNextBtn');
+            const totalSlides = slides.length;
+
+            if (!slides.length) return;
+
+            function updateSlide(index) {
+                slides.forEach((slide, i) => {
+                    slide.classList.toggle('active', i === index);
+                });
+                indicators.forEach((indicator, i) => {
+                    indicator.classList.toggle('active', i === index);
+                });
+                prevBtn.disabled = index === 0;
+                nextBtn.disabled = index === totalSlides - 1;
+            }
+
+            function goToSlide(index) {
+                if (index >= 0 && index < totalSlides) {
+                    currentSlide = index;
+                    updateSlide(currentSlide);
+                }
+            }
+
+            function nextSlide() {
+                if (currentSlide < totalSlides - 1) {
+                    goToSlide(currentSlide + 1);
+                }
+            }
+
+            function prevSlide() {
+                if (currentSlide > 0) {
+                    goToSlide(currentSlide - 1);
+                }
+            }
+
+            nextBtn.addEventListener('click', nextSlide);
+            prevBtn.addEventListener('click', prevSlide);
+
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => goToSlide(index));
+            });
+
+            // Touch/swipe support
+            let touchStartX = null;
+            let touchEndX = null;
+            const carouselContent = document.getElementById('workshopCarouselContent');
+
+            if (carouselContent) {
+                carouselContent.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                });
+
+                carouselContent.addEventListener('touchend', (e) => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    const swipeDistance = touchStartX - touchEndX;
+                    if (swipeDistance > 50) nextSlide();
+                    else if (swipeDistance < -50) prevSlide();
+                    touchStartX = null;
+                    touchEndX = null;
+                });
+            }
+        }
+
+        // Korn Ferry Carousel
+        function initKFCarousel() {
+            let currentSlide = 0;
+            const slides = document.querySelectorAll('#kfCarouselContent .slide');
+            const indicators = document.querySelectorAll('#kfIndicators .indicator');
+            const prevBtn = document.getElementById('kfPrevBtn');
+            const nextBtn = document.getElementById('kfNextBtn');
+            const totalSlides = slides.length;
+
+            if (!slides.length) return;
+
+            function updateSlide(index) {
+                slides.forEach((slide, i) => {
+                    slide.classList.toggle('active', i === index);
+                });
+                indicators.forEach((indicator, i) => {
+                    indicator.classList.toggle('active', i === index);
+                });
+                prevBtn.disabled = index === 0;
+                nextBtn.disabled = index === totalSlides - 1;
+            }
+
+            function goToSlide(index) {
+                if (index >= 0 && index < totalSlides) {
+                    currentSlide = index;
+                    updateSlide(currentSlide);
+                }
+            }
+
+            function nextSlide() {
+                if (currentSlide < totalSlides - 1) {
+                    goToSlide(currentSlide + 1);
+                }
+            }
+
+            function prevSlide() {
+                if (currentSlide > 0) {
+                    goToSlide(currentSlide - 1);
+                }
+            }
+
+            nextBtn.addEventListener('click', nextSlide);
+            prevBtn.addEventListener('click', prevSlide);
+
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => goToSlide(index));
+            });
+
+            // Touch/swipe support
+            let touchStartX = null;
+            let touchEndX = null;
+            const carouselContent = document.getElementById('kfCarouselContent');
+
+            if (carouselContent) {
+                carouselContent.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                });
+
+                carouselContent.addEventListener('touchend', (e) => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    const swipeDistance = touchStartX - touchEndX;
+                    if (swipeDistance > 50) nextSlide();
+                    else if (swipeDistance < -50) prevSlide();
+                    touchStartX = null;
+                    touchEndX = null;
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initExplorer();
+            initScrollAnimations();
+            initNavigation();
+            initCarousel();
+            initWorkshopCarousel();
+            initKFCarousel();
+            
+            // Scroll prompt click
+            const scrollPrompt = document.getElementById('scrollPrompt');
+            if (scrollPrompt) {
+                scrollPrompt.addEventListener('click', () => {
+                    const team = document.getElementById('team');
+                    if (team) {
+                        team.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+

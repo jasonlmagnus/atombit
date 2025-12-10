@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magnus × Atombit: The Uncomfortable Truth</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --text-primary: #fafafa;
+            --text-secondary: #a0a0a0;
+            --accent: #ff4d00;
+            --accent-dim: #ff4d0033;
+            --serif: 'Instrument Serif', Georgia, serif;
+            --sans: 'Syne', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--sans);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Password Gate */
+        .password-gate {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .password-gate.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .password-content {
+            text-align: center;
+            max-width: 400px;
+            padding: 2rem;
+        }
+
+        .password-content h1 {
+            font-family: var(--serif);
+            font-size: 2rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+
+        .password-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .password-input-wrap {
+            position: relative;
+        }
+
+        .password-input-wrap input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid #333;
+            color: var(--text-primary);
+            font-family: var(--sans);
+            font-size: 1rem;
+            letter-spacing: 0.2em;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .password-input-wrap input:focus {
+            border-color: var(--accent);
+        }
+
+        .password-input-wrap input::placeholder {
+            color: #555;
+            letter-spacing: 0.1em;
+        }
+
+        /* Main Content */
+        .content-wrapper {
+            opacity: 0;
+            transition: opacity 0.8s ease 0.3s;
+        }
+
+        .content-wrapper.visible {
+            opacity: 1;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        nav a {
+            width: 10px;
+            height: 10px;
+            border: 1px solid var(--text-secondary);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            transform: scale(1.3);
+        }
+
+        /* Sections */
+        section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+
+        .section-inner {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--accent-dim) 0%, transparent 70%);
+            pointer-events: none;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .hero-eyebrow {
+            font-size: 0.75rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeUp 1s ease forwards 0.3s;
+        }
+
+        .hero h1 {
+            font-family: var(--serif);
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeUp 1s ease forwards 0.5s;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeUp 1s ease forwards 0.7s;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeUp 1s ease forwards 1s;
+        }
+
+        .scroll-indicator::after {
+            content: '';
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--text-secondary), transparent);
+            animation: scrollLine 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollLine {
+            0%, 100% { transform: scaleY(1); opacity: 1; }
+            50% { transform: scaleY(0.5); opacity: 0.3; }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Atom-Bit Visual */
+        .atom-bit-visual {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .atom {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--text-primary);
+            border-radius: 50%;
+            animation: atomPulse 4s ease-in-out infinite;
+        }
+
+        .bit {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--accent);
+            animation: bitRotate 20s linear infinite;
+        }
+
+        .bit::before,
+        .bit::after {
+            content: '';
+            position: absolute;
+            border: 1px solid var(--accent);
+            opacity: 0.4;
+        }
+
+        .bit::before {
+            width: 28px;
+            height: 28px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+
+        .bit::after {
+            width: 50px;
+            height: 50px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes atomPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        @keyframes bitRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Chapter Headers */
+        .chapter-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .chapter-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, var(--accent), transparent);
+            max-width: 100px;
+        }
+
+        .section-title {
+            font-family: var(--serif);
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 400;
+            margin-bottom: 2rem;
+            line-height: 1.2;
+        }
+
+        .section-title em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .team-member {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border: 1px solid #222;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+        }
+
+        .team-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 0.3rem 0.6rem;
+            border: 1px solid;
+        }
+
+        .team-badge.payroll {
+            color: #4ade80;
+            border-color: #4ade80;
+        }
+
+        .team-badge.associate {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .team-member h3 {
+            font-family: var(--serif);
+            font-size: 1.4rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-member .role {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .team-member p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Trap Section */
+        .trap-section {
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
+        }
+
+        .trap-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .trap-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        .trap-visual {
+            position: relative;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lookalike-stack {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .lookalike-card {
+            position: absolute;
+            width: 100%;
+            padding: 2rem;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            text-align: center;
+            font-family: var(--sans);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: all 0.5s ease;
+        }
+
+        .lookalike-card:nth-child(1) { transform: rotate(-8deg) translateY(-20px); opacity: 0.4; }
+        .lookalike-card:nth-child(2) { transform: rotate(-4deg) translateY(-10px); opacity: 0.6; }
+        .lookalike-card:nth-child(3) { transform: rotate(0deg); opacity: 0.8; }
+        .lookalike-card:nth-child(4) { transform: rotate(4deg) translateY(10px); opacity: 0.6; }
+        .lookalike-card:nth-child(5) { transform: rotate(8deg) translateY(20px); opacity: 0.4; }
+
+        .trap-text blockquote {
+            font-family: var(--serif);
+            font-size: 1.5rem;
+            font-style: italic;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+            border-left: 2px solid var(--accent);
+        }
+
+        .trap-text p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        /* Engine Section */
+        .engine-section {
+            background: var(--bg-secondary);
+        }
+
+        /* Gap Section */
+        .gap-section {
+            background: var(--bg-primary);
+        }
+
+        .gap-statement {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .gap-opener {
+            font-family: var(--serif);
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .gap-response {
+            font-family: var(--serif);
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            color: var(--text-primary);
+        }
+
+        .gap-response em {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        .gap-story {
+            max-width: 650px;
+            margin: 0 auto 3rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .model-pillars {
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            gap: 0;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .pillar {
+            flex: 1;
+            min-width: 200px;
+            max-width: 280px;
+            padding: 2rem;
+            background: var(--bg-secondary);
+            border: 1px solid #222;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pillar:hover {
+            border-color: var(--accent);
+        }
+
+        .pillar-number {
+            display: block;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .pillar p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        .pillar-connector {
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .pillar-connector::before {
+            content: '+';
+        }
+
+        @media (max-width: 900px) {
+            .model-pillars {
+                flex-direction: column;
+                align-items: center;
+            }
+            .pillar {
+                max-width: 100%;
+            }
+            .pillar-connector {
+                width: 100%;
+                height: 40px;
+            }
+        }
+
+        .gap-proof {
+            text-align: center;
+            margin: 3rem 0;
+            padding: 2rem 0;
+            border-top: 1px solid #222;
+            border-bottom: 1px solid #222;
+        }
+
+        .proof-statement {
+            font-family: var(--serif);
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .proof-evidence {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .proof-evidence .stat {
+            color: #4ade80;
+            font-weight: 600;
+        }
+
+        .gap-choice {
+            margin-top: 3rem;
+        }
+
+        .choice-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .choice-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .choice {
+            padding: 2rem;
+            border: 1px solid #333;
+            position: relative;
+        }
+
+        .choice-label {
+            display: block;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .choice p {
+            font-family: var(--serif);
+            font-size: 1.3rem;
+        }
+
+        .choice p em {
+            font-style: italic;
+        }
+
+        .choice.them {
+            opacity: 0.6;
+        }
+
+        .choice.them p em {
+            color: var(--text-secondary);
+        }
+
+        .choice.us {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, var(--accent-dim) 0%, transparent 50%);
+        }
+
+        .choice.us p em {
+            color: var(--accent);
+        }
+
+        .choice-subtext {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .video-placeholder {
+            aspect-ratio: 16/9;
+            background: var(--bg-primary);
+            border: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .video-placeholder:hover {
+            border-color: var(--accent);
+        }
+
+        .video-placeholder::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent 40%, var(--accent-dim) 50%, transparent 60%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .play-button {
+            width: 80px;
+            height: 80px;
+            border: 2px solid var(--text-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .video-placeholder:hover .play-button {
+            border-color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .play-button::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 20px solid var(--text-primary);
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            margin-left: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        .video-placeholder:hover .play-button::after {
+            border-left-color: var(--accent);
+        }
+
+        .video-label {
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Promise Section */
+        .promise-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .promise-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .promise-column h3 {
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #333;
+        }
+
+        .promise-column.yes h3 {
+            color: #4ade80;
+            border-color: #4ade80;
+        }
+
+        .promise-column.no h3 {
+            color: #f87171;
+            border-color: #f87171;
+        }
+
+        .promise-column ul {
+            list-style: none;
+        }
+
+        .promise-column li {
+            padding: 0.75rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .promise-column li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .promise-column.yes li::before {
+            background: #4ade80;
+        }
+
+        .promise-column.no li::before {
+            background: #f87171;
+        }
+
+        /* Spine Section */
+        .spine-section {
+            text-align: center;
+        }
+
+        .spine-question {
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .spine-answer {
+            font-family: var(--serif);
+            font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+            font-weight: 400;
+            line-height: 1.4;
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .spine-answer em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: var(--accent);
+            margin: 3rem auto;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .spine-coda {
+            max-width: 500px;
+            margin: 0 auto 2rem;
+            text-align: center;
+        }
+
+        .coda-line {
+            font-family: var(--serif);
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .coda-line:last-child {
+            color: var(--text-primary);
+        }
+
+        .coda-line em {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        .cta-button {
+            padding: 1rem 2rem;
+            font-family: var(--sans);
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-decoration: none;
+            border: 1px solid;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .cta-button.primary {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+        }
+
+        .cta-button.primary:hover {
+            background: transparent;
+            color: var(--accent);
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border-color: #333;
+        }
+
+        .cta-button.secondary:hover {
+            border-color: var(--text-primary);
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 2rem;
+            text-align: center;
+            border-top: 1px solid #1a1a1a;
+        }
+
+        footer p {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        /* Animations on scroll */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Password Gate -->
+    <div class="password-gate" id="passwordGate">
+        <div class="password-content">
+            <h1>Private Access</h1>
+            <p>This document is prepared exclusively for Atombit.</p>
+            <div class="password-input-wrap">
+                <input type="password" id="passwordInput" placeholder="Enter access code" autocomplete="off">
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-wrapper" id="contentWrapper">
+        
+        <!-- Navigation -->
+        <nav>
+            <a href="#hero" class="active" title="Start"></a>
+            <a href="#team" title="The Team"></a>
+            <a href="#trap" title="The Trap"></a>
+            <a href="#gap" title="The Gap"></a>
+            <a href="#engine" title="The Engine"></a>
+            <a href="#promise" title="The Promise"></a>
+            <a href="#spine" title="The Spine"></a>
+        </nav>
+
+        <!-- Hero -->
+        <section id="hero" class="hero">
+            <div class="section-inner">
+                <div class="atom-bit-visual">
+                    <span class="atom"></span>
+                    <span class="bit"></span>
+                </div>
+                <p class="hero-eyebrow">Magnus × Atombit</p>
+                <h1>The <em>Uncomfortable</em> Truth</h1>
+                <p class="hero-subtitle">You're restoring human connection in a world that forgot how to listen.<br>Here's why that matters to how we work together.</p>
+            </div>
+            <div class="scroll-indicator">Scroll</div>
+        </section>
+
+        <!-- Chapter 1: The Team -->
+        <section id="team">
+            <div class="section-inner">
+                <div class="chapter-label">Chapter One</div>
+                <h2 class="section-title fade-in">The <em>Team</em></h2>
+                <p class="fade-in" style="color: var(--text-secondary); max-width: 600px; margin-bottom: 1rem;">You asked who's on payroll, who's an associate. Here's the truth — clearly labelled, nothing hidden.</p>
+                
+                <div class="team-grid">
+                    <div class="team-member fade-in">
+                        <span class="team-badge payroll">Payroll</span>
+                        <h3>Teresa Allan</h3>
+                        <p class="role">Managing Partner</p>
+                        <p>Founder. Your strategic lead. Accountable for every deliverable that leaves our hands.</p>
+                    </div>
+                    <div class="team-member fade-in">
+                        <span class="team-badge payroll">Payroll + EMI</span>
+                        <h3>Lindsay Carr</h3>
+                        <p class="role">Full-time</p>
+                        <p>Day-to-day client lead. Six years working with Jason. Four years with Teresa. This is not a freelance assembly.</p>
+                    </div>
+                    <div class="team-member fade-in">
+                        <span class="team-badge payroll">Payroll + EMI</span>
+                        <h3>Jason Ryan</h3>
+                        <p class="role">3 days/week (formally)</p>
+                        <p>Strategic architecture. In practice, contributes well beyond contracted hours. EMI options reflect commitment.</p>
+                    </div>
+                    <div class="team-member fade-in">
+                        <span class="team-badge associate">Associate</span>
+                        <h3>Mark Earls</h3>
+                        <p class="role">Behavioural Strategist</p>
+                        <p>Long-standing partner since Naked days. Specialist horsepower. Here because this brief demands it.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 2: The Trap -->
+        <section id="trap" class="trap-section">
+            <div class="section-inner">
+                <div class="trap-content">
+                    <div class="trap-visual">
+                        <div class="lookalike-stack">
+                            <div class="lookalike-card">"Human-centred AI solutions"</div>
+                            <div class="lookalike-card">"Where technology meets empathy"</div>
+                            <div class="lookalike-card">"Intelligent experiences, human outcomes"</div>
+                            <div class="lookalike-card">"AI-powered customer connection"</div>
+                            <div class="lookalike-card">"The future of experience"</div>
+                        </div>
+                    </div>
+                    <div class="trap-text">
+                        <div class="chapter-label">Chapter Two</div>
+                        <h2 class="section-title fade-in">The <em>Trap</em></h2>
+                        <blockquote class="fade-in">"Everyone in your space claims to bridge human and digital. The words have become meaningless."</blockquote>
+                        <p class="fade-in">Atom + Bit. It's a beautiful idea. But beautiful ideas get buried under generic language every day.</p>
+                        <p class="fade-in">The graveyard of B2B tech is full of companies with compelling origin stories and forgettable market positions.</p>
+                        <p class="fade-in" style="color: var(--text-primary); font-weight: 500;">Your risk isn't too much process. It's a brand that sounds like everyone else who's trying to sound human.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 3: The Gap -->
+        <section id="gap" class="gap-section">
+            <div class="section-inner">
+                <div class="chapter-label">Chapter Three</div>
+                <h2 class="section-title fade-in">The <em>Gap</em></h2>
+                
+                <div class="gap-statement">
+                    <p class="gap-opener fade-in">You said we present like a management consultancy.</p>
+                    <p class="gap-response fade-in">That's fair. <em>It's also intentional.</em></p>
+                </div>
+                
+                <div class="gap-story fade-in">
+                    <p>You built Atombit because the world needed someone to bridge human and digital — to restore connection that technology had fractured.</p>
+                    <p style="margin-top: 1rem;">Four years ago, we built Magnus for a parallel reason: creative agencies couldn't close the commercial gap, and consultancies couldn't close the creative one.</p>
+                    <p style="margin-top: 1.5rem; color: var(--text-primary);">We created a new type of consultancy:</p>
+                </div>
+                
+                <div class="model-pillars">
+                    <div class="pillar fade-in">
+                        <span class="pillar-number">01</span>
+                        <p>Rigour of top-tier strategy</p>
+                    </div>
+                    <div class="pillar-connector"></div>
+                    <div class="pillar fade-in">
+                        <span class="pillar-number">02</span>
+                        <p>Imagination and edge of people who've actually worked inside world-class creative agencies</p>
+                    </div>
+                    <div class="pillar-connector"></div>
+                    <div class="pillar fade-in">
+                        <span class="pillar-number">03</span>
+                        <p>Anchored in customer truth, not internal aspiration</p>
+                    </div>
+                </div>
+                
+                <div class="gap-proof fade-in">
+                    <p class="proof-statement">This model didn't exist. So we built it.</p>
+                    <p class="proof-evidence">And it works — which is why we consistently deliver breakthrough positioning and GTM strategies while holding a <span class="stat">+93 NPS</span>.</p>
+                </div>
+                
+                <div class="gap-choice fade-in">
+                    <div class="choice-row">
+                        <div class="choice them">
+                            <span class="choice-label">Your competitor</span>
+                            <p>will give you <em>energy</em></p>
+                        </div>
+                        <div class="choice us">
+                            <span class="choice-label">We</span>
+                            <p>will give you <em>clarity, edge and meaning</em></p>
+                            <span class="choice-subtext">— the raw material creativity actually depends on</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 4: The Engine -->
+        <section id="engine" class="engine-section">
+            <div class="section-inner">
+                <div class="chapter-label">Chapter Four</div>
+                <h2 class="section-title fade-in">The <em>Engine</em></h2>
+                <p class="fade-in" style="color: var(--text-secondary); max-width: 600px;">Magnitude isn't a deliverable. It's what ensures your brand doesn't fragment as you scale across regions, sectors, and acquisitions.</p>
+                
+                <div class="video-placeholder fade-in">
+                    <div class="play-button"></div>
+                    <span class="video-label">60-second platform walkthrough</span>
+                </div>
+                
+                <p class="fade-in" style="color: var(--text-secondary); margin-top: 2rem; font-size: 0.9rem; text-align: center;">Want the full demo? We'll book 20 minutes whenever suits.</p>
+            </div>
+        </section>
+
+        <!-- Chapter 4: The Promise -->
+        <section id="promise">
+            <div class="section-inner">
+                <div class="chapter-label">Chapter Five</div>
+                <h2 class="section-title fade-in">The <em>Promise</em></h2>
+                <p class="fade-in" style="color: var(--text-secondary); max-width: 600px; margin-bottom: 1rem;">Complete clarity on what you're buying — and what you're not.</p>
+                
+                <div class="promise-grid">
+                    <div class="promise-column yes fade-in">
+                        <h3>What we deliver</h3>
+                        <ul>
+                            <li>Full brand strategy and positioning</li>
+                            <li>Narrative architecture</li>
+                            <li>Value proposition framework</li>
+                            <li>Complete verbal identity</li>
+                            <li>Creative brief package</li>
+                            <li>Messaging hierarchy</li>
+                            <li>Tone of voice guidelines</li>
+                            <li>Internal activation plan</li>
+                            <li>Stakeholder alignment</li>
+                            <li>Strategic support through creative execution</li>
+                            <li>Weekly check-ins with your creative agency</li>
+                        </ul>
+                    </div>
+                    <div class="promise-column no fade-in">
+                        <h3>What we don't</h3>
+                        <ul>
+                            <li>Visual design or identity systems</li>
+                            <li>Logos, typography, colour palettes</li>
+                            <li>Photography or graphic direction</li>
+                            <li>ABM programme build or execution</li>
+                            <li>GTM narrative beyond brand strategy scope</li>
+                            <li>Segmentation models (unless added)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 6: The Spine -->
+        <section id="spine" class="spine-section">
+            <div class="section-inner">
+                <div class="chapter-label">Chapter Six</div>
+                <h2 class="section-title fade-in">The <em>Spine</em></h2>
+                
+                <div class="divider fade-in"></div>
+                
+                <p class="spine-question fade-in">You asked:</p>
+                <p class="spine-answer fade-in">"Are we too safe?"</p>
+                
+                <div class="divider fade-in"></div>
+                
+                <p class="spine-question fade-in">Our answer:</p>
+                <p class="spine-answer fade-in">If you want <em>fireworks</em>, we are the wrong choice.</p>
+                <p class="spine-answer fade-in">If you want a fire that burns for <em>ten years</em>, we are the only choice.</p>
+                
+                <div class="divider fade-in"></div>
+                
+                <div class="spine-coda fade-in">
+                    <p class="coda-line">You restore human connection in a world of noise.</p>
+                    <p class="coda-line">We give you the words that make people <em>feel</em> it.</p>
+                </div>
+                
+                <div class="cta-group fade-in">
+                    <a href="mailto:teresa.allan@magnusconsulting.co.uk" class="cta-button primary">Book a conversation</a>
+                    <a href="#" class="cta-button secondary">View detailed responses</a>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Prepared exclusively for Atombit by Magnus Consulting</p>
+        </footer>
+    </div>
+
+    <script>
+        // Password gate
+        const passwordInput = document.getElementById('passwordInput');
+        const passwordGate = document.getElementById('passwordGate');
+        const contentWrapper = document.getElementById('contentWrapper');
+        
+        // Set your password here
+        const correctPassword = 'atombit';
+        
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if (passwordInput.value.toLowerCase() === correctPassword) {
+                    passwordGate.classList.add('hidden');
+                    contentWrapper.classList.add('visible');
+                } else {
+                    passwordInput.style.borderColor = '#f87171';
+                    passwordInput.value = '';
+                    setTimeout(() => {
+                        passwordInput.style.borderColor = '#333';
+                    }, 1000);
+                }
+            }
+        });
+
+        // Scroll animations
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        fadeElements.forEach(el => observer.observe(el));
+
+        // Navigation active state
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('nav a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= sectionTop - sectionHeight / 3) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
