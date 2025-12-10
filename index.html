@@ -1292,57 +1292,221 @@
         }
 
         /* Brand Strategy Pyramid */
-        .brand-pyramid {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .pyramid-layer {
-            background: white;
-            border: 1px solid #ddd;
-            padding: 1.25rem 2rem;
-            text-align: center;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
-        }
-
-        .pyramid-layer.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .pyramid-layer h4 {
-            font-family: var(--sans);
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            color: #1a1a1a;
-        }
-
-        .pyramid-layer p {
-            font-size: 0.85rem;
-            color: #888;
-            font-style: italic;
-        }
-
-        .pyramid-pillars {
+        /* Roots Layout - Three Column */
+        .roots-layout {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-bottom: 3rem;
         }
 
-        @media (max-width: 600px) {
-            .pyramid-pillars {
+        @media (max-width: 900px) {
+            .roots-layout {
                 grid-template-columns: 1fr;
+                gap: 2rem;
             }
         }
 
-        .pyramid-pillars .pyramid-layer {
-            padding: 1.25rem 1rem;
+        /* Left: Chaos */
+        .roots-chaos {
+            text-align: right;
+        }
+
+        @media (max-width: 900px) {
+            .roots-chaos { text-align: center; }
+        }
+
+        .chaos-label {
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text);
+            margin-bottom: 1.25rem;
+            font-weight: 600;
+        }
+
+        .chaos-fragments {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 0.4rem;
+        }
+
+        @media (max-width: 900px) {
+            .chaos-fragments { justify-content: center; }
+        }
+
+        .chaos-fragment {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 0.35rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* Right: Distilled */
+        .roots-distilled {
+            text-align: left;
+        }
+
+        @media (max-width: 900px) {
+            .roots-distilled { text-align: center; }
+        }
+
+        .distilled-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .distilled-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        @media (max-width: 900px) {
+            .distilled-items { 
+                flex-direction: row; 
+                justify-content: center;
+                gap: 1rem;
+            }
+        }
+
+        .item-name {
+            font-family: var(--serif);
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--text);
+        }
+
+        /* Center: Bloom */
+        .roots-bloom {
+            display: flex;
+            justify-content: center;
+        }
+
+        .bloom-visual {
+            position: relative;
+            width: 200px;
+            height: 240px;
+        }
+
+        .stem {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 100px;
+            background: linear-gradient(to top, var(--accent), rgba(255,77,0,0.3));
+            border-radius: 2px;
+        }
+
+        .stem::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .flower {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            animation: bloom 2s ease-out forwards;
+            opacity: 0;
+        }
+
+        .flower-1 {
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation-delay: 0.3s;
+        }
+
+        .flower-2 {
+            top: 45px;
+            left: 15%;
+            animation-delay: 0.6s;
+        }
+
+        .flower-3 {
+            top: 45px;
+            right: 15%;
+            animation-delay: 0.9s;
+        }
+
+        @keyframes bloom {
+            0% { opacity: 0; transform: translateX(-50%) scale(0.3); }
+            100% { opacity: 1; transform: translateX(-50%) scale(1); }
+        }
+
+        .flower-2, .flower-3 {
+            animation-name: bloom-side;
+        }
+
+        @keyframes bloom-side {
+            0% { opacity: 0; transform: scale(0.3); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .petal {
+            position: absolute;
+            width: 26px;
+            height: 40px;
+            background: rgba(255, 77, 0, 0.15);
+            border: 1px solid rgba(255, 77, 0, 0.3);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            left: 50%;
+            top: 50%;
+            transform-origin: center bottom;
+        }
+
+        .petal:nth-child(1) { transform: translate(-50%, -100%) rotate(0deg); }
+        .petal:nth-child(2) { transform: translate(-50%, -100%) rotate(72deg); }
+        .petal:nth-child(3) { transform: translate(-50%, -100%) rotate(144deg); }
+        .petal:nth-child(4) { transform: translate(-50%, -100%) rotate(216deg); }
+        .petal:nth-child(5) { transform: translate(-50%, -100%) rotate(288deg); }
+
+        .center {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Bloom Message */
+        .bloom-message {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .bloom-lead {
+            font-family: var(--serif);
+            font-size: 1.8rem;
+            font-style: italic;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .bloom-sub {
+            font-size: 1rem;
+            color: var(--text-dim);
         }
 
         /* Creative Brief */
@@ -2822,40 +2986,65 @@
         <section id="brand-strategy">
             <div class="section-inner">
                 <div class="chapter-label">Phase 03</div>
-                <h2 class="section-title fade-in">We build the <em>spine</em></h2>
-                <p class="fade-in" style="color: var(--text-dim); max-width: 600px; margin-bottom: 2rem;">The architecture that makes creative work sharper. Every execution traces back to this.</p>
+                <h2 class="section-title fade-in">Creativity needs <em>roots</em></h2>
+                <p class="fade-in" style="color: var(--text-dim); max-width: 600px; margin-bottom: 3rem;">We create the conditions for it to flourish.</p>
                 
-                <div class="brand-pyramid">
-                    <div class="pyramid-layer" data-delay="0">
-                        <h4>Purpose</h4>
-                        <p>Why we exist for our customers beyond making money.</p>
-                    </div>
-                    <div class="pyramid-layer" data-delay="100">
-                        <h4>Positioning</h4>
-                        <p>Where we play and how we're distinct in the market.</p>
-                    </div>
-                    <div class="pyramid-layer" data-delay="200">
-                        <h4>Value Proposition</h4>
-                        <p>The clear promise of value we make to customers.</p>
-                    </div>
-                    <div class="pyramid-pillars">
-                        <div class="pyramid-layer" data-delay="300">
-                            <h4>Brand Pillar 1</h4>
-                            <p>How we deliver on the promise</p>
-                        </div>
-                        <div class="pyramid-layer" data-delay="400">
-                            <h4>Brand Pillar 2</h4>
-                            <p>How we deliver on the promise</p>
-                        </div>
-                        <div class="pyramid-layer" data-delay="500">
-                            <h4>Brand Pillar 3</h4>
-                            <p>How we deliver on the promise</p>
+                <div class="roots-layout fade-in">
+                    <div class="roots-chaos">
+                        <div class="chaos-label">You arrive with</div>
+                        <div class="chaos-fragments">
+                            <span class="chaos-fragment">Market pressures</span>
+                            <span class="chaos-fragment">Competitor noise</span>
+                            <span class="chaos-fragment">Internal politics</span>
+                            <span class="chaos-fragment">Customer truths</span>
+                            <span class="chaos-fragment">Legacy positioning</span>
+                            <span class="chaos-fragment">Acquisition complexity</span>
+                            <span class="chaos-fragment">Growth ambitions</span>
+                            <span class="chaos-fragment">Stakeholder opinions</span>
                         </div>
                     </div>
-                    <div class="pyramid-layer" data-delay="600">
-                        <h4>Reasons to Believe</h4>
-                        <p>Proof points that show we can deliver what we promise.</p>
+                    <div class="roots-bloom">
+                        <div class="bloom-visual">
+                            <div class="stem"></div>
+                            <div class="flower flower-1">
+                                <div class="petal"></div>
+                                <div class="petal"></div>
+                                <div class="petal"></div>
+                                <div class="petal"></div>
+                                <div class="petal"></div>
+                                <div class="center"></div>
+                            </div>
+                            <div class="flower flower-2">
+                                <div class="petal"></div>
+                                <div class="petal"></div>
+                                <div class="petal"></div>
+                                <div class="petal"></div>
+                                <div class="petal"></div>
+                                <div class="center"></div>
+                            </div>
+                            <div class="flower flower-3">
+                                <div class="petal"></div>
+                                <div class="petal"></div>
+                                <div class="petal"></div>
+                                <div class="petal"></div>
+                                <div class="petal"></div>
+                                <div class="center"></div>
+                            </div>
+                        </div>
                     </div>
+                    <div class="roots-distilled">
+                        <div class="distilled-label">We distill to</div>
+                        <div class="distilled-items">
+                            <div class="distilled-item"><span class="item-name">Purpose</span></div>
+                            <div class="distilled-item"><span class="item-name">Positioning</span></div>
+                            <div class="distilled-item"><span class="item-name">Promise</span></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bloom-message fade-in">
+                    <p class="bloom-lead">Strategy is the soil.</p>
+                    <p class="bloom-sub">Get it right, and everything that follows grows stronger.</p>
                 </div>
             </div>
         </section>
