@@ -2274,6 +2274,34 @@
             color: var(--text);
         }
 
+        .workshop-factors {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .factor {
+            font-family: var(--sans);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+        }
+
+        .factor:last-child {
+            margin-bottom: 0;
+        }
+
+        .factor-label {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            margin-right: 0.5rem;
+        }
+
         .workshop-intro-body p {
             color: var(--text-dim);
             font-size: 1rem;
@@ -3453,7 +3481,16 @@
                 <p class="workshop-subtitle fade-in"><em>Environment matters.</em></p>
                 
                 <div class="workshop-intro">
-                    <div class="workshop-intro-lead fade-in">We create the conditions where real thinking happens. Where people leave the room having genuinely shifted—not just ticked a box.</div>
+                    <div class="workshop-intro-lead fade-in">
+                        We create the conditions where real thinking happens. Where people leave the room having genuinely shifted—not just ticked a box.
+                        
+                        <div class="workshop-factors">
+                            <div class="factor"><span class="factor-label">Place</span> Top of The Shard. Off-site retreats. Spaces that shift perspective.</div>
+                            <div class="factor"><span class="factor-label">Customer</span> Personas in the room. Rapid validation built into every session.</div>
+                            <div class="factor"><span class="factor-label">Practical</span> Show me, don't tell me. Paper prototypes before the day ends.</div>
+                            <div class="factor"><span class="factor-label">Active</span> Games and time-boxed tasks. Not debates and decks.</div>
+                        </div>
+                    </div>
                     <div class="workshop-intro-body fade-in">
                         <p>Between the four of us, we've facilitated hundreds of creative workshops across every kind of organization you can imagine. From senior leadership teams to company-wide engagements, from startups finding their footing to global brands reimagining their future.</p>
                         <p>What we've learned is that <strong>no two challenges call for the same approach.</strong> So we've built a deep toolbox of techniques and we select the right ones for your needs and your culture.</p>
