@@ -2315,12 +2315,18 @@
         /* Workshop Gallery */
         .workshop-gallery {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
             margin: 4rem 0;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
+            .workshop-gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
             .workshop-gallery {
                 grid-template-columns: 1fr;
             }
@@ -3510,6 +3516,12 @@
                         <img src="workshop-location-shard.png" alt="The Shard, London">
                         <div class="workshop-gallery-caption">
                             <strong>Location matters.</strong> We take people out of their everyday environment. Different spaces unlock different thinking. From The Shard to countryside retreats.
+                        </div>
+                    </div>
+                    <div class="workshop-gallery-item">
+                        <img src="workshop-prototype.png" alt="Paper prototype demo setup">
+                        <div class="workshop-gallery-caption">
+                            <strong>Show me, don't tell me.</strong> Ideas become real before lunch. Paper prototypes, smartphone demos, tangible outputs — not slide decks and strategy documents.
                         </div>
                     </div>
                 </div>
