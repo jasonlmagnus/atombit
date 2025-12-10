@@ -1509,6 +1509,130 @@
             color: var(--text-dim);
         }
 
+        /* ============================================
+           THE SPINE SECTION
+           ============================================ */
+        .xray-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 800px) {
+            .xray-container {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+        }
+
+        .spine-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .spine-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, transparent 0%, var(--accent) 15%, var(--accent) 85%, transparent 100%);
+            transform: translateX(-50%);
+            opacity: 0.4;
+        }
+
+        .vertebra {
+            position: relative;
+            padding: 0.75rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vertebra-bone {
+            height: 28px;
+            background: rgba(255, 77, 0, 0.12);
+            border: 1px solid rgba(255, 77, 0, 0.35);
+            border-radius: 14px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vertebra:nth-child(1) .vertebra-bone { width: 70px; }
+        .vertebra:nth-child(2) .vertebra-bone { width: 85px; }
+        .vertebra:nth-child(3) .vertebra-bone { width: 95px; }
+        .vertebra:nth-child(4) .vertebra-bone { width: 85px; }
+        .vertebra:nth-child(5) .vertebra-bone { width: 70px; }
+
+        .vertebra-text {
+            font-family: var(--serif);
+            font-size: 0.75rem;
+            font-style: italic;
+            color: var(--accent);
+            letter-spacing: 0.05em;
+        }
+
+        .vertebra-label {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            white-space: nowrap;
+        }
+
+        .vertebra:nth-child(odd) .vertebra-label {
+            right: calc(50% + 60px);
+            text-align: right;
+        }
+
+        .vertebra:nth-child(even) .vertebra-label {
+            left: calc(50% + 60px);
+            text-align: left;
+        }
+
+        .vertebra-label span {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            line-height: 1.4;
+        }
+
+        .xray-message {
+            text-align: left;
+        }
+
+        .xray-message h3 {
+            font-family: var(--serif);
+            font-size: 1.6rem;
+            font-style: italic;
+            font-weight: 400;
+            margin-bottom: 1.25rem;
+        }
+
+        .xray-message p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+        }
+
+        .xray-message p:last-child {
+            margin-bottom: 0;
+        }
+
+        .xray-message p em {
+            color: var(--text);
+            font-style: italic;
+        }
+
         /* Creative Brief */
         .example-label {
             font-size: 0.75rem;
@@ -3096,10 +3220,77 @@
             </div>
         </section>
 
-        <!-- Phase 04: Creative Brief -->
-        <section id="creative-brief">
+        <!-- Phase 04: The Spine -->
+        <section id="spine">
             <div class="section-inner">
                 <div class="chapter-label">Phase 04</div>
+                <h2 class="section-title fade-in">The work you <em>can't see</em></h2>
+                <p class="fade-in" style="color: var(--text-dim); max-width: 600px; margin-bottom: 3rem;">Great creative has strategy running through it — invisible but essential.</p>
+
+                <div class="xray-container fade-in">
+                    <div class="spine-visual">
+                        <div class="spine-line"></div>
+                        
+                        <div class="vertebra">
+                            <div class="vertebra-bone">
+                                <span class="vertebra-text">Tension</span>
+                            </div>
+                            <div class="vertebra-label">
+                                <span>The problem worth solving</span>
+                            </div>
+                        </div>
+                        
+                        <div class="vertebra">
+                            <div class="vertebra-bone">
+                                <span class="vertebra-text">Truth</span>
+                            </div>
+                            <div class="vertebra-label">
+                                <span>What customers actually feel</span>
+                            </div>
+                        </div>
+                        
+                        <div class="vertebra">
+                            <div class="vertebra-bone">
+                                <span class="vertebra-text">Territory</span>
+                            </div>
+                            <div class="vertebra-label">
+                                <span>Where you have permission</span>
+                            </div>
+                        </div>
+                        
+                        <div class="vertebra">
+                            <div class="vertebra-bone">
+                                <span class="vertebra-text">Tone</span>
+                            </div>
+                            <div class="vertebra-label">
+                                <span>How it should feel</span>
+                            </div>
+                        </div>
+                        
+                        <div class="vertebra">
+                            <div class="vertebra-bone">
+                                <span class="vertebra-text">Test</span>
+                            </div>
+                            <div class="vertebra-label">
+                                <span>How we'll know it's working</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="xray-message">
+                        <h3>We build the spine together.</h3>
+                        <p>This isn't a handover. It's a foundation we lay with you — so the creative team can be braver, faster, more focused.</p>
+                        <p>We've done the hard yards. Found the tension. Uncovered the truth. Mapped the territory.</p>
+                        <p><em>When the strategy is right, creatives don't need guardrails. They have conviction.</em></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 05: Creative Brief -->
+        <section id="creative-brief">
+            <div class="section-inner">
+                <div class="chapter-label">Phase 05</div>
                 <h2 class="section-title fade-in">We fuel the <em>creatives</em></h2>
                 <p class="fade-in" style="color: var(--text-dim); max-width: 600px; margin-bottom: 2rem;">The brief is simple. Four lines. Everything a creative team needs to be brave.</p>
                 
@@ -3126,11 +3317,11 @@
             </div>
         </section>
 
-        <!-- Phase 05: Territory Exploration -->
+        <!-- Phase 06: Territory Exploration -->
         <section id="territories" style="min-height: auto; padding-bottom: 2rem;">
             <div class="section-inner" style="max-width: 1100px;">
                 <div class="territory-intro">
-                    <div class="chapter-label" style="justify-content: center;">Phase 05</div>
+                    <div class="chapter-label" style="justify-content: center;">Phase 06</div>
                     <h2 class="section-title fade-in" style="text-align: center;">We map the <em>possibilities</em></h2>
                     <p class="fade-in" style="color: var(--text-dim); margin: 0 auto 2rem; text-align: center;">Creative direction isn't guesswork. It's chosen from mapped territory. Four tensions. Sixteen ways in.</p>
                     <div class="example-label" style="text-align: center;">Example: How we might explore creative territories</div>
@@ -3218,10 +3409,10 @@
             </div>
         </section>
 
-        <!-- Phase 06: Handoff -->
+        <!-- Phase 07: Handoff -->
         <section id="handoff" style="text-align: center;">
             <div class="section-inner">
-                <div class="chapter-label" style="justify-content: center;">Phase 06</div>
+                <div class="chapter-label" style="justify-content: center;">Phase 07</div>
                 <h2 class="section-title fade-in">You leave <em>ready to build</em></h2>
                 <p class="fade-in" style="color: var(--text-dim); max-width: 600px; margin: 0 auto 2rem;">We don't disappear. We hand your creative agency everything they need — and stay to help guide it.</p>
                 
