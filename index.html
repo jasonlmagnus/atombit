@@ -2509,6 +2509,18 @@
 
         .case-carousel .slide.slide-image.active {
             display: flex !important;
+            flex-direction: column !important;
+            min-height: 450px;
+        }
+        
+        .case-carousel .slide-full-image {
+            width: 100%;
+            height: auto;
+            max-height: 350px;
+            object-fit: contain;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
 
         .case-carousel .slide.slide-mission.active {
